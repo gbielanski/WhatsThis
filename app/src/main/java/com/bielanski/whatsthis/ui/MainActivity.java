@@ -62,6 +62,7 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.view.TextureView.*;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String FILE_PATH = "FILE_PATH";
     private final String TAG = "MainActivity";
     @BindView(R.id.textureView)
     TextureView mTextureView;
@@ -287,8 +288,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 takePicture();
-                //Intent intent = new Intent(MainActivity.this, VisionActivity.class);
-                //startActivity(intent);
             }
         });
     }
@@ -422,6 +421,9 @@ public class MainActivity extends AppCompatActivity {
             mState = STATE_PREVIEW;
             mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
                     mCameraBackgroundHandler);
+            Intent intent = new Intent(this, VisionActivity.class);
+            intent.putExtra(FILE_PATH, mFile.toString());
+            startActivity(intent);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
