@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">What\'s This?</string>
+    <string name="what_s_this">WHAT\'S THIS?</string>
+    <string name="history">HISTORY</string>
+    <string name="taken_photo">taken photo</string>
+    <string name="close_this_photo_search">close this photo search</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_history_list">No history available.</string>
+    <string name="camera_error">Camera error</string>
+    <string name="request_permission">App needs camera permission.</string>
+    <string name="request_write_permission">App needs this permission.</string>
+</resources>
