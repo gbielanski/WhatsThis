@@ -8,13 +8,20 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
+        android:name=".WhatIsThisApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ui.MainActivity">
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="label" />
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,6 +40,12 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/history_widget_provider_info" />
         </receiver>
+
+        <service
+            android:name=".database.WikiIntentService"
+            android:exported="false" />
+
+        <activity android:name=".ui.HistoryActivity"></activity>
     </application>
 
 </manifest>

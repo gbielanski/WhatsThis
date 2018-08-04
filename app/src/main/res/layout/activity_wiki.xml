@@ -7,7 +7,7 @@
     tools:context=".ui.WikiActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar2"
+        android:id="@+id/wiki_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -18,37 +18,37 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/wiki_image"
         android:layout_width="200dp"
         android:layout_height="240dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        app:layout_constraintTop_toBottomOf="@+id/wiki_toolbar"
         app:srcCompat="@drawable/camera_not_available" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/wiki_button_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        app:layout_constraintStart_toEndOf="@+id/wiki_image"
+        app:layout_constraintTop_toBottomOf="@+id/wiki_toolbar"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/wiki_button_save"
         android:layout_width="58dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/wiki_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/wiki_image"
+        app:layout_constraintTop_toBottomOf="@+id/wiki_button_close"
         app:srcCompat="@android:drawable/ic_menu_save" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/wiki_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/wiki_image"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
 
     <ScrollView
@@ -71,11 +71,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/wiki_title">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/wiki_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content" />
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

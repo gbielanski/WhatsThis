@@ -62,14 +62,13 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.view.TextureView.*;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String FILE_PATH = "FILE_PATH";
-    private final String TAG = "MainActivity";
-    @BindView(R.id.textureView)
-    TextureView mTextureView;
-    @BindView(R.id.toolbar)
-    Toolbar myToolbar;
-    @BindView(R.id.what_s_this_button)
-    Button button;
+    public final String TAG = "MainActivity";
+
+    public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
+
+    @BindView(R.id.textureView) TextureView mTextureView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.what_s_this_button) Button button;
 
     private Handler mCameraBackgroundHandler;
     private HandlerThread mCameraThread;
@@ -273,9 +272,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
-        setSupportActionBar(myToolbar);
+        setSupportActionBar(mToolbar);
         //TODO move to application and use CrashReportingTree
-        Timber.plant(new Timber.DebugTree());
         Timber.tag(TAG);
         Timber.d("onCreate");
         File path = Environment.getExternalStoragePublicDirectory(
@@ -422,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
             mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
                     mCameraBackgroundHandler);
             Intent intent = new Intent(this, VisionActivity.class);
-            intent.putExtra(FILE_PATH, mFile.toString());
+            intent.putExtra(FILE_PATH_KEY, mFile.toString());
             startActivity(intent);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -470,7 +468,10 @@ public class MainActivity extends AppCompatActivity {
             mCameraDevice = null;
         }
 
-        //TODO close reader here
+        if (mImageReader != null) {
+            mImageReader.close();
+            mImageReader = null;
+        }
     }
 
     @Override
@@ -478,10 +479,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         startCameraThread();
         if (mTextureView.isAvailable()) {
-            Timber.d("Surface is available");
             openCamera();
         } else {
-            Timber.d("Surface is NOT available set listener");
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
     }
@@ -526,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.history_menu_item) {
-            Toast.makeText(MainActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
+            HistoryActivity.startHistory(this);
             return true;
         }
 
