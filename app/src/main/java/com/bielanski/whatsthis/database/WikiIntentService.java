@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.ui.WikiActivity;
+import com.bielanski.whatsthis.widget.HistoryWidgetProvider;
 
 import timber.log.Timber;
 
@@ -27,7 +28,6 @@ public class WikiIntentService extends IntentService {
         context.startService(intent);
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
         Timber.tag("WikiIntentService");
@@ -37,6 +37,8 @@ public class WikiIntentService extends IntentService {
             if (ACTION_INSERT_WIKI.equals(action)) {
                 final WikiEntity wiki = intent.getParcelableExtra(WIKI);
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().bulkInsert(wiki);
+                Intent dataUpdatedIntent = new Intent(HistoryWidgetProvider.ACTION_DATA_UPDATED);
+                sendBroadcast(dataUpdatedIntent);
                 Timber.d("wiki inserted");
 
             }else

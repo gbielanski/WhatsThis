@@ -33,7 +33,8 @@
 
         <receiver android:name=".widget.HistoryWidgetProvider">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.bielanski.bakingapp.ACTION_DATA_UPDATED" />
             </intent-filter>
 
             <meta-data
@@ -45,7 +46,12 @@
             android:name=".database.WikiIntentService"
             android:exported="false" />
 
-        <activity android:name=".ui.HistoryActivity"></activity>
+        <activity android:name=".ui.HistoryActivity" />
+
+        <service
+            android:name=".widget.WikiRemoteViewsService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
