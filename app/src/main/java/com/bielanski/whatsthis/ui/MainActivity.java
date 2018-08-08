@@ -37,6 +37,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
@@ -95,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String mCameraId;
 
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+    }
+    private int mSensorOrientation;
 
     private ImageReader mImageReader;
 
@@ -280,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("onCreate");
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
+        Log.d(TAG, "gbpath " + path);
         mFile = new File(path, "pic.jpg");
 
         mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
@@ -331,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
             setAutoFlash(captureBuilder);
 
             // Orientation
-            //int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
+            int rotation = getWindowManager().getDefaultDisplay().getRotation();
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
 
             CameraCaptureSession.CaptureCallback CaptureCallback
                     = new CameraCaptureSession.CaptureCallback() {
@@ -341,7 +351,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
-                    //showToast("Saved: " + mFile);
                     Timber.d(mFile.toString());
                     unlockFocus();
                 }
@@ -353,6 +362,15 @@ public class MainActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private int getOrientation(int rotation) {
+        Timber.d("Orintation rotation %d mSensorOrientation %d", rotation, mSensorOrientation);
+        // Sensor orientation is 90 for most devices, or 270 for some devices (eg. Nexus 5X)
+        // We have to take that into account and rotate JPEG properly.
+        // For devices with orientation of 90, we simply return our mapping from ORIENTATIONS.
+        // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
+        return (ORIENTATIONS.get(rotation) + mSensorOrientation + 270) % 360;
     }
 
     private void openCamera() {
@@ -415,6 +433,8 @@ public class MainActivity extends AppCompatActivity {
                         ImageFormat.JPEG, /*maxImages*/2);
                 mImageReader.setOnImageAvailableListener(
                         mOnImageAvailableListener, mCameraBackgroundHandler);
+                mSensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+
                 Timber.d("openCamera");
 
                 Boolean available = cameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
@@ -431,7 +451,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void unlockFocus() {
         try {
-            // Reset the auto-focus trigger
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
             setAutoFlash(mPreviewRequestBuilder);

@@ -2,6 +2,10 @@ package com.bielanski.whatsthis.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +30,8 @@ import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
 import com.bielanski.whatsthis.network.data.WikiInfo;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,7 +70,13 @@ public class WikiActivity extends AppCompatActivity {
         if (intent != null) {
             wikiItem = intent.getStringExtra(VisionActivity.WIKI_KEY);
             final String filePath = getIntent().getStringExtra(FILE_PATH_KEY);
-            Drawable drawable = Drawable.createFromPath(filePath);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            File imgFile = new  File(filePath);
+            Bitmap inBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            Bitmap outBitmap = Bitmap.createBitmap(inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true);
+            Drawable drawable = new BitmapDrawable(getResources(), outBitmap);
+            //Drawable drawable = Drawable.createFromPath(filePath);
             wikiImage.setImageDrawable(drawable);
 
             Timber.d("wikiItem %s", wikiItem);

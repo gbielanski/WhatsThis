@@ -3,11 +3,13 @@ package com.bielanski.whatsthis.ui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.media.ExifInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +33,9 @@ import com.google.firebase.ml.vision.label.FirebaseVisionLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetector;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetectorOptions;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +63,15 @@ public class VisionActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         Timber.tag(TAG);
         mFilePath = getIntent().getStringExtra(FILE_PATH_KEY);
-        Drawable drawable = Drawable.createFromPath(mFilePath);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        File imgFile = new  File(mFilePath);
+        Bitmap inBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        Bitmap outBitmap = Bitmap.createBitmap(inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true);
+        Drawable drawable = new BitmapDrawable(getResources(), outBitmap);
+
+        //Drawable drawable = Drawable.createFromPath(mFilePath);
         visionImage.setImageDrawable(drawable);
         BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
         mAdapter = new ArrayAdapter<>(this,
