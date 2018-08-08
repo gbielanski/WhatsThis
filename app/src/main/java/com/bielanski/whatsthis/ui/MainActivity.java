@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -66,9 +67,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
 
-    @BindView(R.id.textureView) TextureView mTextureView;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.what_s_this_button) Button button;
+    @BindView(R.id.textureView)
+    TextureView mTextureView;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.what_s_this_button)
+    Button button;
 
     private Handler mCameraBackgroundHandler;
     private HandlerThread mCameraThread;
@@ -88,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
     //for camera preview
     private CaptureRequest mPreviewRequest;
     private CaptureRequest.Builder mPreviewRequestBuilder;
+
+    private String mCameraId;
+
 
     private ImageReader mImageReader;
 
@@ -118,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                         captureStillPicture();
                     } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                             CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
-                        // CONTROL_AE_STATE can be null on some devices
                         Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                         if (aeState == null ||
                                 aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
@@ -166,13 +172,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+    private boolean mFlashSupported;
+    private CaptureRequest.Builder autoFlash;
 
     private void runPrecaptureSequence() {
         try {
-            // This is how to tell the camera to trigger.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
                     CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
-            // Tell #mCaptureCallback to wait for the precapture sequence to be set.
             mState = STATE_WAITING_PRECAPTURE;
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
                     mCameraBackgroundHandler);
@@ -194,10 +200,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-            /*
-            mCamera.stopPreview();
-            mCamera.release();
-            * */
             return true;
         }
 
@@ -325,7 +327,8 @@ public class MainActivity extends AppCompatActivity {
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            //setAutoFlash(captureBuilder);
+
+            setAutoFlash(captureBuilder);
 
             // Orientation
             //int rotation = getWindowManager().getDefaultDisplay().getRotation();
@@ -355,7 +358,34 @@ public class MainActivity extends AppCompatActivity {
     private void openCamera() {
         Timber.d("fun openCamera");
         final CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+        if (cameraManager == null)
+            return;
+
+        setupCameraOutput(cameraManager);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestCameraPermission();
+            return;
+        }
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_PERMISSION);
+        }
+
+        try {
+            cameraManager.openCamera(mCameraId, mCameraStateCallback, mCameraBackgroundHandler);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setupCameraOutput(CameraManager cameraManager) {
+
         String[] cameraIdList = null;
+
         try {
             cameraIdList = cameraManager.getCameraIdList();
 
@@ -372,18 +402,6 @@ public class MainActivity extends AppCompatActivity {
                 if (facing == CameraMetadata.LENS_FACING_BACK)
                     Timber.d("Back camera id %s", cameraId);
 
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestCameraPermission();
-                    return;
-                }
-
-                if (Build.VERSION.SDK_INT >= 23) {
-                    int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_PERMISSION);
-                    }
-                }
-
                 StreamConfigurationMap map = cameraCharacteristics.get(
                         CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
                 if (map == null) {
@@ -398,8 +416,12 @@ public class MainActivity extends AppCompatActivity {
                 mImageReader.setOnImageAvailableListener(
                         mOnImageAvailableListener, mCameraBackgroundHandler);
                 Timber.d("openCamera");
-                cameraManager.openCamera(cameraId, mCameraStateCallback, mCameraBackgroundHandler);
 
+                Boolean available = cameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+                mFlashSupported = available == null ? false : available;
+
+                mCameraId = cameraId;
+                return;
             }
 
         } catch (CameraAccessException e) {
@@ -412,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
             // Reset the auto-focus trigger
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-            //setAutoFlash(mPreviewRequestBuilder);
+            setAutoFlash(mPreviewRequestBuilder);
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
                     mCameraBackgroundHandler);
             // After this, the camera will go back to the normal state of preview.
@@ -530,6 +552,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
+        if (mFlashSupported) {
+            requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                    CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+        }
     }
 
     public static class ConfirmationDialog extends DialogFragment {
