@@ -60,10 +60,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.view.TextureView.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CameraSurfaceTextureListener.OnSurfaceTextureAvailable {
     public final String TAG = "MainActivity";
 
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
@@ -196,27 +195,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private SurfaceTextureListener mSurfaceTextureListener = new SurfaceTextureListener() {
-        @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-            openCamera();
-        }
-
-        @Override
-        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
-
-        }
-
-        @Override
-        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-            return true;
-        }
-
-        @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-
-        }
-    };
+    private SurfaceTextureListener mSurfaceTextureListener = new CameraSurfaceTextureListener(this) ;
 
     private CameraDevice.StateCallback mCameraStateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -228,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
                 mPreviewRequestBuilder
                         = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
                 mPreviewRequestBuilder.addTarget(surface);
-                //TODO add image reader here
                 mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()), new CameraCaptureSession.StateCallback() {
                     @Override
                     public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
@@ -289,7 +267,6 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("onCreate");
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
-        Log.d(TAG, "gbpath " + path);
         mFile = new File(path, "pic.jpg");
 
         mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
@@ -306,9 +283,6 @@ public class MainActivity extends AppCompatActivity {
         lockFocus();
     }
 
-    /**
-     * Lock the focus as the first step for a still image capture.
-     */
     private void lockFocus() {
         try {
             // This is how to tell the camera to lock focus.
@@ -578,6 +552,11 @@ public class MainActivity extends AppCompatActivity {
             requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable() {
+        openCamera();
     }
 
     public static class ConfirmationDialog extends DialogFragment {

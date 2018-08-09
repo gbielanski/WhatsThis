@@ -29,6 +29,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions;
+import com.google.firebase.ml.vision.cloud.label.FirebaseVisionCloudLabel;
+import com.google.firebase.ml.vision.cloud.label.FirebaseVisionCloudLabelDetector;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetector;
@@ -83,7 +86,46 @@ public class VisionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        visionApiLabelingOnDevide(bitmapDrawable);
+        //visionApiLabelingOnDevide(bitmapDrawable);
+        visionApiLabelingCloud(bitmapDrawable);
+    }
+
+    private void  visionApiLabelingCloud(BitmapDrawable bitmapDrawable) {
+        FirebaseVisionCloudDetectorOptions options =
+                new FirebaseVisionCloudDetectorOptions.Builder()
+                        .setModelType(FirebaseVisionCloudDetectorOptions.LATEST_MODEL)
+                        .setMaxResults(15)
+                        .build();
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmapDrawable.getBitmap());
+        FirebaseVisionCloudLabelDetector detector = FirebaseVision.getInstance()
+                .getVisionCloudLabelDetector();
+        Task<List<FirebaseVisionCloudLabel>> result =
+                detector.detectInImage(image)
+                        .addOnSuccessListener(
+                                new OnSuccessListener<List<FirebaseVisionCloudLabel>>() {
+                                    int count = 0;
+                                    ArrayList<String> listOfLabels = new ArrayList<>();
+                                    @Override
+                                    public void onSuccess(List<FirebaseVisionCloudLabel> labels) {
+                                        for (FirebaseVisionCloudLabel label : labels) {
+                                            String text = label.getLabel();
+                                            String entityId = label.getEntityId();
+                                            float confidence = label.getConfidence();
+                                            Timber.d("onSuccess labels[%d] text %s entityId %s confidence %.2f", labels.size(), text, entityId, confidence);
+                                            listOfLabels.add(text);
+                                        }
+                                        mAdapter.clear();
+                                        mAdapter.addAll(listOfLabels);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Timber.d("onFailure");
+                                    }
+                                });
     }
 
     private void visionApiLabelingOnDevide(BitmapDrawable bitmapDrawable) {
@@ -118,7 +160,6 @@ public class VisionActivity extends AppCompatActivity {
                                         mAdapter.clear();
                                         mAdapter.addAll(listOfLabels);
                                         mAdapter.notifyDataSetChanged();
-
                                     }
                                 })
                         .addOnFailureListener(
