@@ -30,6 +30,7 @@ import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
 import com.bielanski.whatsthis.network.data.WikiInfo;
+import com.bielanski.whatsthis.utils.ImageUtils;
 
 import java.io.File;
 
@@ -70,12 +71,8 @@ public class WikiActivity extends AppCompatActivity {
         if (intent != null) {
             wikiItem = intent.getStringExtra(VisionActivity.WIKI_KEY);
             final String filePath = getIntent().getStringExtra(FILE_PATH_KEY);
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            File imgFile = new  File(filePath);
-            Bitmap inBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            Bitmap outBitmap = Bitmap.createBitmap(inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true);
-            Drawable drawable = new BitmapDrawable(getResources(), outBitmap);
+
+            Drawable drawable = ImageUtils.getDrawableFromPath(this, filePath);
             //Drawable drawable = Drawable.createFromPath(filePath);
             wikiImage.setImageDrawable(drawable);
 

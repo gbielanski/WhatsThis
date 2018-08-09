@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
+import com.bielanski.whatsthis.utils.ImageUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -64,12 +65,7 @@ public class VisionActivity extends AppCompatActivity {
         Timber.tag(TAG);
         mFilePath = getIntent().getStringExtra(FILE_PATH_KEY);
 
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        File imgFile = new  File(mFilePath);
-        Bitmap inBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        Bitmap outBitmap = Bitmap.createBitmap(inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true);
-        Drawable drawable = new BitmapDrawable(getResources(), outBitmap);
+        Drawable drawable = ImageUtils.getDrawableFromPath(this, mFilePath);
 
         //Drawable drawable = Drawable.createFromPath(mFilePath);
         visionImage.setImageDrawable(drawable);
