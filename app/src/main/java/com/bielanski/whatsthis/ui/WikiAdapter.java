@@ -5,11 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bielanski.whatsthis.R;
 import com.bielanski.whatsthis.database.data.WikiEntity;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -47,7 +50,9 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull WikiAdapter.ViewHolder holder, int position) {
-        holder.title.setText(mWikiList.get(position).getTitle());
+        final WikiEntity wikiEntity = mWikiList.get(position);
+        holder.title.setText(wikiEntity.getTitle());
+        Picasso.get().load(new File(wikiEntity.getFileName())).into(holder.image);
 
     }
 
@@ -58,6 +63,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.wiki_item_title) TextView title;
+        @BindView(R.id.wiki_item_image) ImageView image;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

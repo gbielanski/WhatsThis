@@ -13,6 +13,7 @@ public class WikiEntity implements Parcelable{
     @NonNull
     String title;
     String description;
+    String fileName;
 
     public WikiEntity(String title, String description) {
         this.title = title;
@@ -35,9 +36,17 @@ public class WikiEntity implements Parcelable{
         this.description = description;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
     protected WikiEntity(Parcel in) {
         title = in.readString();
         description = in.readString();
+        fileName = in.readString();
     }
 
     public static final Creator<WikiEntity> CREATOR = new Creator<WikiEntity>() {
@@ -56,7 +65,8 @@ public class WikiEntity implements Parcelable{
     public String toString() {
         String desc = "Wiki " +
                 "title " + title +
-                " description " + description;
+                " description " + description +
+                " file name " + fileName;
 
         return desc;
     }
@@ -70,5 +80,6 @@ public class WikiEntity implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
         parcel.writeString(description);
+        parcel.writeString(fileName);
     }
 }

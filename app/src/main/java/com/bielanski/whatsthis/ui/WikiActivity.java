@@ -1,38 +1,22 @@
 package com.bielanski.whatsthis.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
-import com.bielanski.whatsthis.database.WikiDao;
-import com.bielanski.whatsthis.database.WikiDatabase;
 import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
 import com.bielanski.whatsthis.network.data.WikiInfo;
 import com.bielanski.whatsthis.utils.ImageUtils;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,10 +28,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
-import static com.bielanski.whatsthis.ui.MainActivity.FILE_PATH_KEY;
+import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class WikiActivity extends AppCompatActivity {
     public static final String TAG = "WikiActivity";
+    public static final String WIKIPEDIA_URL = "https://en.wikipedia.org/";
 
     @BindView(R.id.wiki_toolbar)
     Toolbar mToolbar;
@@ -97,7 +82,7 @@ public class WikiActivity extends AppCompatActivity {
 
     private void loadJSON(String title) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://en.wikipedia.org/")
+                .baseUrl(WIKIPEDIA_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RequestInterface request = retrofit.create(RequestInterface.class);

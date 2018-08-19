@@ -3,11 +3,22 @@ package com.bielanski.whatsthis.database;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Environment;
 import android.widget.Toast;
 
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.ui.WikiActivity;
+import com.bielanski.whatsthis.utils.ImageUtils;
 import com.bielanski.whatsthis.widget.HistoryWidgetProvider;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
 
 import timber.log.Timber;
 
@@ -36,6 +47,8 @@ public class WikiIntentService extends IntentService {
         context.startService(intent);
     }
 
+
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Timber.tag("WikiIntentService");
@@ -43,7 +56,9 @@ public class WikiIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_INSERT_WIKI.equals(action)) {
+                final String imageFile = ImageUtils.saveImageFile();
                 final WikiEntity wiki = intent.getParcelableExtra(WIKI);
+                wiki.setFileName(imageFile);
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().bulkInsert(wiki);
                 Intent dataUpdatedIntent = new Intent(HistoryWidgetProvider.ACTION_DATA_UPDATED);
                 sendBroadcast(dataUpdatedIntent);

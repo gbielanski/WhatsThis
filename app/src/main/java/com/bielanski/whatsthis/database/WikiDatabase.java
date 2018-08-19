@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.bielanski.whatsthis.database.data.WikiEntity;
 
-@Database(entities = {WikiEntity.class}, version = 1)
+@Database(entities = {WikiEntity.class}, version = 2)
 public abstract class  WikiDatabase extends RoomDatabase {
     private static final String LOG_TAG = WikiDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();
@@ -20,7 +20,7 @@ public abstract class  WikiDatabase extends RoomDatabase {
         if (sInstance == null) {
             synchronized (LOCK) {
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                        WikiDatabase.class, WikiDatabase    .DATABASE_NAME).fallbackToDestructiveMigration().build();
+                        WikiDatabase.class, WikiDatabase.DATABASE_NAME).fallbackToDestructiveMigration().build();
                 Log.d(LOG_TAG, "Made new database");
             }
         }

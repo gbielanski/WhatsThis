@@ -50,7 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static com.bielanski.whatsthis.ui.MainActivity.FILE_PATH_KEY;
+import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class VisionActivity extends AppCompatActivity {
     public static final String WIKI_KEY = "WIKI_KEY";

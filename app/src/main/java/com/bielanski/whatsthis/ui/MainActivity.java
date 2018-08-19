@@ -59,11 +59,10 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static android.view.TextureView.*;
+import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class MainActivity extends AppCompatActivity implements CameraSurfaceTextureListener.OnSurfaceTextureAvailable {
     public final String TAG = "MainActivity";
-
-    public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
 
     @BindView(R.id.textureView) TextureView mTextureView;
     @BindView(R.id.toolbar) Toolbar mToolbar;
