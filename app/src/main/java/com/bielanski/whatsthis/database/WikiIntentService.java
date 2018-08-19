@@ -14,6 +14,7 @@ import timber.log.Timber;
 public class WikiIntentService extends IntentService {
 
     private static final String ACTION_INSERT_WIKI = "com.bielanski.whatsthis.database.action.INSERT_WIKI";
+    private static final String ACTION_DELETE_ALL_WIKI = "com.bielanski.whatsthis.database.action.DELETE_ALL_WIKI";
 
     private static final String WIKI = "com.bielanski.whatsthis.database.extra.WIKI";
 
@@ -24,6 +25,13 @@ public class WikiIntentService extends IntentService {
     public static void startActionInsertWiki(Context context, WikiEntity wiki) {
         Intent intent = new Intent(context, WikiIntentService.class);
         intent.setAction(ACTION_INSERT_WIKI);
+        intent.putExtra(WIKI, wiki);
+        context.startService(intent);
+    }
+
+    public static void startActionDeleteAllWiki(Context context, WikiEntity wiki) {
+        Intent intent = new Intent(context, WikiIntentService.class);
+        intent.setAction(ACTION_DELETE_ALL_WIKI);
         intent.putExtra(WIKI, wiki);
         context.startService(intent);
     }
@@ -40,6 +48,13 @@ public class WikiIntentService extends IntentService {
                 Intent dataUpdatedIntent = new Intent(HistoryWidgetProvider.ACTION_DATA_UPDATED);
                 sendBroadcast(dataUpdatedIntent);
                 Timber.d("wiki inserted");
+
+            }if (ACTION_DELETE_ALL_WIKI.equals(action)) {
+                final WikiEntity wiki = intent.getParcelableExtra(WIKI);
+                WikiDatabase.getInstance(WikiIntentService.this).wikiDao().deleteAll();
+                Intent dataUpdatedIntent = new Intent(HistoryWidgetProvider.ACTION_DATA_UPDATED);
+                sendBroadcast(dataUpdatedIntent);
+                Timber.d("all wiki deleted");
 
             }else
                 Timber.d("action is not ACTION_INSERT_WIKI");
