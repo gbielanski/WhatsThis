@@ -87,8 +87,13 @@ public class WikiActivity extends AppCompatActivity {
     public void onClickButtonSave(View view) {
         WikiEntity wikiEntity = new WikiEntity(wikiTitle.getText().toString(), wikiDescription.getText().toString());
         WikiIntentService.startActionInsertWiki(this, wikiEntity);
-
     }
+
+    @OnClick(R.id.wiki_button_close)
+    public void onClickButtonClose(View view) {
+        finish();
+    }
+
 
     private void loadJSON(String title) {
         Retrofit retrofit = new Retrofit.Builder()
