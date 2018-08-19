@@ -20,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
@@ -55,6 +57,9 @@ public class VisionActivity extends AppCompatActivity {
     @BindView(R.id.vision_image) ImageView visionImage;
     @BindView(R.id.vision_list) ListView visionList;
     @BindView(R.id.vision_toolbar) Toolbar mToolbar;
+    @BindView(R.id.progress_bar_vision) ProgressBar mProgressBar;
+    @BindView(R.id.data_no_available_tv) TextView mNoDataTextView;
+
     private ArrayAdapter<String> mAdapter;
     private String mFilePath;
 
@@ -87,6 +92,11 @@ public class VisionActivity extends AppCompatActivity {
             }
         });
 
+
+
+        visionList.setVisibility(View.GONE);
+        mNoDataTextView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
         // TODO use one of this function dependence on Firebase plan, please see Read me file in repo
         // visionApiLabelingOnDevide(bitmapDrawable);
         visionApiLabelingCloud(bitmapDrawable);
@@ -109,6 +119,9 @@ public class VisionActivity extends AppCompatActivity {
                                     ArrayList<String> listOfLabels = new ArrayList<>();
                                     @Override
                                     public void onSuccess(List<FirebaseVisionCloudLabel> labels) {
+                                        visionList.setVisibility(View.VISIBLE);
+                                        mNoDataTextView.setVisibility(View.GONE);
+                                        mProgressBar.setVisibility(View.GONE);
                                         for (FirebaseVisionCloudLabel label : labels) {
                                             String text = label.getLabel();
                                             String entityId = label.getEntityId();
@@ -125,6 +138,9 @@ public class VisionActivity extends AppCompatActivity {
                                 new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        visionList.setVisibility(View.GONE);
+                                        mNoDataTextView.setVisibility(View.VISIBLE);
+                                        mProgressBar.setVisibility(View.GONE);
                                         Timber.d("onFailure");
                                     }
                                 });

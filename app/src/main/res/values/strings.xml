@@ -11,4 +11,5 @@
     <string name="request_permission">App needs camera permission.</string>
     <string name="request_write_permission">App needs this permission.</string>
     <string name="history_title">History</string>
+    <string name="data_no_available">Cannot get data from Vision Api</string>
 </resources>
