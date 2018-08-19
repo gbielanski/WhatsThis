@@ -28,12 +28,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.VisionActivity" />
+        <activity android:name=".ui.VisionActivity"
+            android:parentActivityName=".ui.MainActivity"/>
         <activity android:name=".ui.WikiActivity" />
 
         <receiver android:name=".widget.HistoryWidgetProvider">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.bielanski.bakingapp.ACTION_DATA_UPDATED" />
             </intent-filter>
 

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -59,6 +60,7 @@ public class VisionActivity extends AppCompatActivity {
     @BindView(R.id.vision_toolbar) Toolbar mToolbar;
     @BindView(R.id.progress_bar_vision) ProgressBar mProgressBar;
     @BindView(R.id.data_no_available_tv) TextView mNoDataTextView;
+    @BindView(R.id.vision_close_button) ImageButton mVisionCloseButton;
 
     private ArrayAdapter<String> mAdapter;
     private String mFilePath;
@@ -92,7 +94,12 @@ public class VisionActivity extends AppCompatActivity {
             }
         });
 
-
+        mVisionCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         visionList.setVisibility(View.GONE);
         mNoDataTextView.setVisibility(View.GONE);
