@@ -41,6 +41,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     @BindView(R.id.textureView) TextureView mTextureView;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.what_s_this_button) Button button;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
 
     private Handler mCameraBackgroundHandler;
     private HandlerThread mCameraThread;
@@ -256,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         mFile = new File(path, "pic.jpg");
-
         mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
 
         button.setOnClickListener(new OnClickListener() {
@@ -269,6 +270,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
 
     private void takePicture() {
         lockFocus();
+        mProgressBar.setVisibility(VISIBLE);
+
     }
 
     private void lockFocus() {
@@ -461,25 +464,36 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
 
 
     private void closeCamera() {
-        if (mCaptureSession != null) {
-            mCaptureSession.close();
-            mCaptureSession = null;
-        }
+        closeCaptureSession();
+        closeCameraDevice();
+        closeImageReader();
+    }
 
-        if (mCameraDevice != null) {
-            mCameraDevice.close();
-            mCameraDevice = null;
-        }
-
+    private void closeImageReader() {
         if (mImageReader != null) {
             mImageReader.close();
             mImageReader = null;
         }
     }
 
+    private void closeCameraDevice() {
+        if (mCameraDevice != null) {
+            mCameraDevice.close();
+            mCameraDevice = null;
+        }
+    }
+
+    private void closeCaptureSession() {
+        if (mCaptureSession != null) {
+            mCaptureSession.close();
+            mCaptureSession = null;
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        mProgressBar.setVisibility(GONE);
         startCameraThread();
         if (mTextureView.isAvailable()) {
             openCamera();
