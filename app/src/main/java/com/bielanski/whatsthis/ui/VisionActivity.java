@@ -53,8 +53,9 @@ import timber.log.Timber;
 import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class VisionActivity extends AppCompatActivity {
-    public static final String WIKI_KEY = "WIKI_KEY";
     public final String TAG = "VisionActivity";
+
+    public static final String WIKI_LABEL_KEY = "WIKI_LABEL_KEY";
     @BindView(R.id.vision_image) ImageView visionImage;
     @BindView(R.id.vision_list) ListView visionList;
     @BindView(R.id.vision_toolbar) Toolbar mToolbar;
@@ -88,7 +89,7 @@ public class VisionActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 final String visionItem = mAdapter.getItem(position);
                 Intent intent = new Intent(VisionActivity.this, WikiActivity.class);
-                intent.putExtra(WIKI_KEY, visionItem);
+                intent.putExtra(WIKI_LABEL_KEY, visionItem);
                 intent.putExtra(FILE_PATH_KEY, mFilePath);
                 startActivity(intent);
             }

@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 
 class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     public static final String TAG = "WikiAdapter";
+
     private List<WikiEntity> mWikiList;
     private OnClickWikiHandler mClickHandler;
 
@@ -64,14 +65,15 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.wiki_item_title) TextView title;
         @BindView(R.id.wiki_item_image) ImageView image;
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-
+            mClickHandler.wikiOnClick(getAdapterPosition());
         }
     }
 }

@@ -24,7 +24,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
+
 public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>,WikiAdapter.OnClickWikiHandler {
+    public static final String WIKI_KEY = "WIKI_KEY";
+
     private List<WikiEntity> mListOfWikiEntities;
     public static final int WIKI_HISTORY_LOADER_ID = 234;
     public static final String TAG = "HistoryActivity";
@@ -85,6 +89,9 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void wikiOnClick(int position) {
-
+        final WikiEntity wikiEntity = mAdapter.getWikiList().get(position);
+        Intent intent = new Intent(this, WikiActivity.class);
+        intent.putExtra(WIKI_KEY, wikiEntity);
+        startActivity(intent);
     }
 }

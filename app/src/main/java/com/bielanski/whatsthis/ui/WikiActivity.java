@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,9 @@ import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
 import com.bielanski.whatsthis.network.data.WikiInfo;
 import com.bielanski.whatsthis.utils.ImageUtils;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,21 +32,19 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
+import static com.bielanski.whatsthis.ui.HistoryActivity.WIKI_KEY;
 import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class WikiActivity extends AppCompatActivity {
     public static final String TAG = "WikiActivity";
     public static final String WIKIPEDIA_URL = "https://en.wikipedia.org/";
 
-    @BindView(R.id.wiki_toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.wiki_image)
-    ImageView wikiImage;
-    @BindView(R.id.wiki_title)
-    TextView wikiTitle;
-    @BindView(R.id.wiki_description)
-    TextView wikiDescription;
-
+    @BindView(R.id.wiki_toolbar) Toolbar mToolbar;
+    @BindView(R.id.wiki_image) ImageView wikiImage;
+    @BindView(R.id.wiki_title) TextView wikiTitle;
+    @BindView(R.id.wiki_description) TextView wikiDescription;
+    @BindView(R.id.wiki_button_save) ImageButton mButtonSave;
+    @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +55,22 @@ public class WikiActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         final Intent intent = getIntent();
         String wikiItem = null;
+        WikiEntity wikiEntity = null;
+
         if (intent != null) {
-            wikiItem = intent.getStringExtra(VisionActivity.WIKI_KEY);
+            wikiEntity = intent.getParcelableExtra(WIKI_KEY);
+            if(wikiEntity != null) {
+                wikiTitle.setText(wikiEntity.getTitle());
+                wikiDescription.setText(wikiEntity.getDescription());
+                Picasso.get().load(new File(wikiEntity.getFileName())).into(wikiImage);
+                mButtonSave.setVisibility(View.GONE);
+                mButtonClose.setVisibility(View.GONE);
+                return;
+            }
+        }
+
+        if (intent != null) {
+            wikiItem = intent.getStringExtra(VisionActivity.WIKI_LABEL_KEY);
             final String filePath = getIntent().getStringExtra(FILE_PATH_KEY);
 
             Drawable drawable = ImageUtils.getDrawableFromPath(this, filePath);
