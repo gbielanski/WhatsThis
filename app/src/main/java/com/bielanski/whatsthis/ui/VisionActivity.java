@@ -86,7 +86,9 @@ public class VisionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //visionApiLabelingOnDevide(bitmapDrawable);
+
+        // TODO use one of this function dependence on Firebase plan, please see Read me file in repo
+        // visionApiLabelingOnDevide(bitmapDrawable);
         visionApiLabelingCloud(bitmapDrawable);
     }
 
