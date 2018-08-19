@@ -22,12 +22,10 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -35,7 +33,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Menu;
@@ -67,12 +64,9 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
 
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
 
-    @BindView(R.id.textureView)
-    TextureView mTextureView;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.what_s_this_button)
-    Button button;
+    @BindView(R.id.textureView) TextureView mTextureView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.what_s_this_button) Button button;
 
     private Handler mCameraBackgroundHandler;
     private HandlerThread mCameraThread;
@@ -89,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     private static final int STATE_WAITING_NON_PRECAPTURE = 3;
     private static final int STATE_PICTURE_TAKEN = 4;
     private int mState = STATE_PREVIEW;
-    //for camera preview
     private CaptureRequest mPreviewRequest;
     private CaptureRequest.Builder mPreviewRequestBuilder;
 
@@ -124,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         private void process(CaptureResult result) {
             switch (mState) {
                 case STATE_PREVIEW: {
-                    // We have nothing to do when the camera preview is working normally.
                     break;
                 }
                 case STATE_WAITING_LOCK: {
@@ -154,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
                     break;
                 }
                 case STATE_WAITING_NON_PRECAPTURE: {
-                    // CONTROL_AE_STATE can be null on some devices
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                         mState = STATE_PICTURE_TAKEN;
@@ -180,9 +171,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         }
 
     };
-    private boolean mFlashSupported;
-    private CaptureRequest.Builder autoFlash;
 
+    private boolean mFlashSupported;
     private void runPrecaptureSequence() {
         try {
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
@@ -214,10 +204,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
                             return;
                         }
 
-                        // When the session is ready, we start displaying the preview.
                         mCaptureSession = cameraCaptureSession;
                         try {
-                            // Auto focus should be continuous for camera preview.
                             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
@@ -285,10 +273,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
 
     private void lockFocus() {
         try {
-            // This is how to tell the camera to lock focus.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_START);
-            // Tell #mCaptureCallback to wait for the lock.
             mState = STATE_WAITING_LOCK;
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
                     mCameraBackgroundHandler);
@@ -303,15 +289,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
             if (mCameraDevice == null) {
                 return;
             }
-            // This is the CaptureRequest.Builder that we use to take a picture.
-            final CaptureRequest.Builder captureBuilder =
-                    mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureBuilder.addTarget(mImageReader.getSurface());
-
-            // Use the same AE and AF modes as the preview.
-            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                    CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
+            CaptureRequest.Builder captureBuilder = createCaptureBuilder();
             setAutoFlash(captureBuilder);
 
             // Orientation
@@ -336,6 +314,16 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @NonNull
+    private CaptureRequest.Builder createCaptureBuilder() throws CameraAccessException {
+        final CaptureRequest.Builder captureBuilder =
+                mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+        captureBuilder.addTarget(mImageReader.getSurface());
+        captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+        return captureBuilder;
     }
 
     private int getOrientation(int rotation) {
