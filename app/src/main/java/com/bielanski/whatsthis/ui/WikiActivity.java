@@ -1,7 +1,9 @@
 package com.bielanski.whatsthis.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
 import com.bielanski.whatsthis.database.WikiIntentService;
@@ -45,6 +48,8 @@ public class WikiActivity extends AppCompatActivity {
     @BindView(R.id.wiki_description) TextView wikiDescription;
     @BindView(R.id.wiki_button_save) ImageButton mButtonSave;
     @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
+    private WikiSavedBroadcastReceiver mWikiSavedBroadcastReceiver;
+    private IntentFilter intentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,9 @@ public class WikiActivity extends AppCompatActivity {
 
         if (wikiItem != null)
             loadJSON(wikiItem);
+
+        mWikiSavedBroadcastReceiver = new WikiSavedBroadcastReceiver();
+        intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_SAVED);
     }
 
     @OnClick(R.id.wiki_button_save)
@@ -162,4 +170,17 @@ public class WikiActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mWikiSavedBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mWikiSavedBroadcastReceiver);
+    }
+
 }
