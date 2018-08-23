@@ -25,7 +25,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wiki_toolbar"
-        app:srcCompat="@drawable/camera_not_available"/>
+        app:srcCompat="@drawable/camera_not_available"
+        android:transitionName="wiki" />
 
     <ImageButton
         android:id="@+id/wiki_button_close"

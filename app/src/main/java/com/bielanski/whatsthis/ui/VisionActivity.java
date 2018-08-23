@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -91,7 +92,9 @@ public class VisionActivity extends AppCompatActivity {
                 Intent intent = new Intent(VisionActivity.this, WikiActivity.class);
                 intent.putExtra(WIKI_LABEL_KEY, visionItem);
                 intent.putExtra(FILE_PATH_KEY, mFilePath);
-                startActivity(intent);
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(VisionActivity.this, visionImage, "wiki");
+                startActivity(intent, options.toBundle());
             }
         });
 
