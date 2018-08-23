@@ -57,6 +57,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull WikiAdapter.ViewHolder holder, int position) {
         final WikiEntity wikiEntity = mWikiList.get(position);
         holder.title.setText(wikiEntity.getTitle());
+        holder.description.setText(wikiEntity.getDescription());
         Picasso.get().load(new File(wikiEntity.getFileName())).into(holder.image);
 
     }
@@ -68,6 +69,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.wiki_item_title) TextView title;
+        @BindView(R.id.wiki_item_desc) TextView description;
         @BindView(R.id.wiki_item_image) ImageView image;
         ViewHolder(View itemView) {
             super(itemView);
