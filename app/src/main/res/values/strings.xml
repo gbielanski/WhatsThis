@@ -13,4 +13,8 @@
     <string name="history_title">History</string>
     <string name="data_no_available">Cannot get data from Vision Api</string>
     <string name="wiki_saved">Wiki Saved</string>
+    <string name="searched_object_photo">Searched object photo</string>
+    <string name="close_this_object_search">Close this object search</string>
+    <string name="save_this_object_search">Save this object search</string>
+    <string name="saved_object_photo">Saved object photo</string>
 </resources>

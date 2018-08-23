@@ -227,8 +227,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
             } catch (CameraAccessException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         @Override

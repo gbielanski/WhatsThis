@@ -23,10 +23,11 @@
         android:layout_height="240dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/searched_object_photo"
+        android:transitionName="wiki"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wiki_toolbar"
-        app:srcCompat="@drawable/camera_not_available"
-        android:transitionName="wiki" />
+        app:srcCompat="@drawable/camera_not_available" />
 
     <ImageButton
         android:id="@+id/wiki_button_close"
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/close_this_object_search"
         app:layout_constraintStart_toEndOf="@+id/wiki_image"
         app:layout_constraintTop_toBottomOf="@+id/wiki_toolbar"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
@@ -44,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/save_this_object_search"
         app:layout_constraintStart_toEndOf="@+id/wiki_image"
         app:layout_constraintTop_toBottomOf="@+id/wiki_button_close"
         app:srcCompat="@android:drawable/ic_menu_save" />

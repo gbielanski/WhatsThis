@@ -24,7 +24,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/camera_not_available" />
+        app:srcCompat="@drawable/camera_not_available"
+        android:contentDescription="@string/saved_object_photo"/>
 
     <TextView
         android:id="@+id/wiki_item_desc"
