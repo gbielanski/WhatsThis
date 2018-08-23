@@ -2,20 +2,26 @@ package com.bielanski.whatsthis.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.bielanski.whatsthis.R;
 import com.bielanski.whatsthis.database.WikiDatabase;
+import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiAsyncTaskLoader;
 import com.bielanski.whatsthis.database.data.WikiEntity;
+
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +32,8 @@ import timber.log.Timber;
 
 import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
-public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>,WikiAdapter.OnClickWikiHandler {
+
+public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>,WikiAdapter.OnClickWikiHandler, WikiDeletedBroadcastReceiver.WikiDeleted {
     public static final String WIKI_KEY = "WIKI_KEY";
 
     private List<WikiEntity> mListOfWikiEntities;
@@ -35,6 +42,8 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
     @BindView(R.id.history_recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.history_toolbar) Toolbar mToolbar;
     private WikiAdapter mAdapter;
+    private WikiDeletedBroadcastReceiver mWikiDeletedBroadcastReceiver;
+    private IntentFilter intentFilter;
 
     public static void startHistory(Context context){
         Intent intent = new Intent(context, HistoryActivity.class);
@@ -53,7 +62,25 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new WikiAdapter(new ArrayList<WikiEntity>(), this);
         mRecyclerView.setAdapter(mAdapter);
+        mWikiDeletedBroadcastReceiver = new WikiDeletedBroadcastReceiver();
+        mWikiDeletedBroadcastReceiver.setWikiDeletedCallback(this);
+        intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_DELETED);
+
+
         getSupportLoaderManager().initLoader(WIKI_HISTORY_LOADER_ID, null, this);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                String wikiTitle = mAdapter.getWikiAtPosition(viewHolder.getAdapterPosition());
+                WikiIntentService.startActionDeleteWiki(HistoryActivity.this, wikiTitle);
+            }
+        }).attachToRecyclerView(mRecyclerView);
     }
 
     @NonNull
@@ -93,5 +120,22 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
         Intent intent = new Intent(this, WikiActivity.class);
         intent.putExtra(WIKI_KEY, wikiEntity);
         startActivity(intent);
+    }
+
+    @Override
+    public void onWikiDeleted() {
+        getSupportLoaderManager().initLoader(WIKI_HISTORY_LOADER_ID, null, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mWikiDeletedBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mWikiDeletedBroadcastReceiver);
     }
 }

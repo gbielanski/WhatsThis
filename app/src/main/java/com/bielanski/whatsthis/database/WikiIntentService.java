@@ -26,9 +26,12 @@ public class WikiIntentService extends IntentService {
 
     private static final String ACTION_INSERT_WIKI = "com.bielanski.whatsthis.database.action.INSERT_WIKI";
     public static final String ACTION_WIKI_SAVED = "com.bielanski.whatsthis.database.action.WIKI_SAVED";
+    public static final String ACTION_WIKI_DELETED = "com.bielanski.whatsthis.database.action.WIKI_DELETED";
     private static final String ACTION_DELETE_ALL_WIKI = "com.bielanski.whatsthis.database.action.DELETE_ALL_WIKI";
+    private static final String ACTION_DELETE_WIKI = "com.bielanski.whatsthis.database.action.DELETE_WIKI";
 
     private static final String WIKI = "com.bielanski.whatsthis.database.extra.WIKI";
+    private static final String WIKI_TITLE = "com.bielanski.whatsthis.database.extra.WIKI_TITLE";
 
     public WikiIntentService() {
         super("WikiIntentService");
@@ -41,10 +44,16 @@ public class WikiIntentService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionDeleteAllWiki(Context context, WikiEntity wiki) {
+    public static void startActionDeleteAllWiki(Context context) {
         Intent intent = new Intent(context, WikiIntentService.class);
         intent.setAction(ACTION_DELETE_ALL_WIKI);
-        intent.putExtra(WIKI, wiki);
+        context.startService(intent);
+    }
+
+    public static void startActionDeleteWiki(Context context, String wiki_title) {
+        Intent intent = new Intent(context, WikiIntentService.class);
+        intent.setAction(ACTION_DELETE_WIKI);
+        intent.putExtra(WIKI_TITLE, wiki_title);
         context.startService(intent);
     }
 
@@ -63,16 +72,26 @@ public class WikiIntentService extends IntentService {
                 notifyUIWikiSaved();
                 Timber.d("wiki inserted");
 
-            }if (ACTION_DELETE_ALL_WIKI.equals(action)) {
+            }else if (ACTION_DELETE_ALL_WIKI.equals(action)) {
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().deleteAll();
                 notifyWidgetDataUpdated();
                 Timber.d("all wiki deleted");
-
+            }else if (ACTION_DELETE_WIKI.equals(action)) {
+                final String wikiTitle = intent.getParcelableExtra(WIKI_TITLE);
+                WikiDatabase.getInstance(WikiIntentService.this).wikiDao().deleteWiki(wikiTitle);
+                notifyWidgetDataUpdated();
+                notifyUIWikiDeleted();
+                Timber.d("all wiki %s deleted", wikiTitle);
             }else
                 Timber.d("action is not ACTION_INSERT_WIKI");
 
         }else
             Timber.d("intent is null");
+    }
+
+    private void notifyUIWikiDeleted() {
+        Intent wikiSavedIntent = new Intent(ACTION_WIKI_DELETED);
+        sendBroadcast(wikiSavedIntent);
     }
 
     private void notifyUIWikiSaved() {

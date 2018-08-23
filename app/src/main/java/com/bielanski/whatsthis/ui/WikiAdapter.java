@@ -24,6 +24,10 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     private List<WikiEntity> mWikiList;
     private OnClickWikiHandler mClickHandler;
 
+    public String getWikiAtPosition(int adapterPosition) {
+        return mWikiList.get(adapterPosition).getTitle();
+    }
+
     public interface OnClickWikiHandler{
         void wikiOnClick(int position);
     }

@@ -59,7 +59,6 @@
                 <action android:name="com.bielanski.whatsthis.database.action.WIKI_SAVED"/>
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

@@ -25,4 +25,7 @@ public interface   WikiDao {
 
     @Query("SELECT * FROM wiki WHERE title == :title")
     List<WikiEntity> getWikiesWithTitle(String title);
+
+    @Query("DELETE FROM wiki WHERE title == :title")
+    void deleteWiki(String title);
 }
