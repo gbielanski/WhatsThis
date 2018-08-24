@@ -42,10 +42,8 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
     private List<WikiEntity> mListOfWikiEntities;
     public static final int WIKI_HISTORY_LOADER_ID = 234;
     public static final String TAG = "HistoryActivity";
-    @BindView(R.id.history_recycler_view)
-    RecyclerView mRecyclerView;
-    @BindView(R.id.history_toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.history_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.history_toolbar) Toolbar mToolbar;
     private WikiAdapter mAdapter;
     private WikiDeletedBroadcastReceiver mWikiDeletedBroadcastReceiver;
     private IntentFilter intentFilter;
