@@ -2,6 +2,7 @@ package com.bielanski.whatsthis.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;

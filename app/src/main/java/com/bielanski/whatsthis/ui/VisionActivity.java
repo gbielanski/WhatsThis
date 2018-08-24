@@ -1,5 +1,7 @@
 package com.bielanski.whatsthis.ui;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

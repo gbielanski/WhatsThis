@@ -1,5 +1,7 @@
 package com.bielanski.whatsthis.ui;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,20 +35,22 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>,WikiAdapter.OnClickWikiHandler, WikiDeletedBroadcastReceiver.WikiDeleted {
+public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>, WikiAdapter.OnClickWikiHandler, WikiDeletedBroadcastReceiver.WikiDeleted {
     public static final String WIKI_KEY = "WIKI_KEY";
     public static final String HISTORY_MAIN = "HistoryMain";
     private FirebaseAnalytics mFirebaseAnalytics;
     private List<WikiEntity> mListOfWikiEntities;
     public static final int WIKI_HISTORY_LOADER_ID = 234;
     public static final String TAG = "HistoryActivity";
-    @BindView(R.id.history_recycler_view) RecyclerView mRecyclerView;
-    @BindView(R.id.history_toolbar) Toolbar mToolbar;
+    @BindView(R.id.history_recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.history_toolbar)
+    Toolbar mToolbar;
     private WikiAdapter mAdapter;
     private WikiDeletedBroadcastReceiver mWikiDeletedBroadcastReceiver;
     private IntentFilter intentFilter;
 
-    public static void startHistory(Context context){
+    public static void startHistory(Context context) {
         Intent intent = new Intent(context, HistoryActivity.class);
         context.startActivity(intent);
     }
@@ -97,13 +101,13 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoadFinished(@NonNull Loader<List<WikiEntity>> loader, List<WikiEntity> listOfWikiEntities) {
 
-        if(listOfWikiEntities == null || listOfWikiEntities.size() == 0){
+        if (listOfWikiEntities == null || listOfWikiEntities.size() == 0) {
             Timber.d("listOfWikiEntities is empty");
         }
 
         mListOfWikiEntities = listOfWikiEntities;
 
-        for (WikiEntity entity : mListOfWikiEntities){
+        for (WikiEntity entity : mListOfWikiEntities) {
             Timber.d(entity.toString());
         }
 

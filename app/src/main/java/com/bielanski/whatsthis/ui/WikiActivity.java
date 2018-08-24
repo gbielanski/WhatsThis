@@ -54,7 +54,7 @@ public class WikiActivity extends AppCompatActivity {
     @BindView(R.id.wiki_button_save) ImageButton mButtonSave;
     @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
     private WikiSavedBroadcastReceiver mWikiSavedBroadcastReceiver;
-    private IntentFilter intentFilter;
+    private IntentFilter intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_SAVED);;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
@@ -96,7 +96,7 @@ public class WikiActivity extends AppCompatActivity {
             loadJSON(wikiItem);
 
         mWikiSavedBroadcastReceiver = new WikiSavedBroadcastReceiver();
-        intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_SAVED);
+
     }
 
     @OnClick(R.id.wiki_button_save)
