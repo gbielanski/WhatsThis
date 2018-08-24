@@ -45,6 +45,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,6 +63,7 @@ import static android.view.TextureView.*;
 import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class MainActivity extends AppCompatActivity implements CameraSurfaceTextureListener.OnSurfaceTextureAvailable {
+    public static final String ACTIVITY_MAIN = "ActivityMain";
     public final String TAG = "MainActivity";
 
     @BindView(R.id.textureView) TextureView mTextureView;
@@ -174,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     };
 
     private boolean mFlashSupported;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private void runPrecaptureSequence() {
         try {
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
@@ -252,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         //TODO move to application and use CrashReportingTree
         Timber.tag(TAG);
         Timber.d("onCreate");
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         mFile = new File(path, "pic.jpg");
@@ -490,6 +495,9 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     @Override
     protected void onResume() {
         super.onResume();
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, ACTIVITY_MAIN);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         mProgressBar.setVisibility(GONE);
         startCameraThread();
         if (mTextureView.isAvailable()) {

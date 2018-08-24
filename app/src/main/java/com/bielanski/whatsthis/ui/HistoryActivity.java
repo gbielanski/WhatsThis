@@ -16,10 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.bielanski.whatsthis.R;
+import com.bielanski.whatsthis.WhatIsThisApp;
 import com.bielanski.whatsthis.database.WikiDatabase;
 import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiAsyncTaskLoader;
 import com.bielanski.whatsthis.database.data.WikiEntity;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.jetbrains.annotations.Contract;
 
@@ -30,12 +32,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
-
 
 public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>,WikiAdapter.OnClickWikiHandler, WikiDeletedBroadcastReceiver.WikiDeleted {
     public static final String WIKI_KEY = "WIKI_KEY";
-
+    public static final String HISTORY_MAIN = "HistoryMain";
+    private FirebaseAnalytics mFirebaseAnalytics;
     private List<WikiEntity> mListOfWikiEntities;
     public static final int WIKI_HISTORY_LOADER_ID = 234;
     public static final String TAG = "HistoryActivity";
@@ -57,6 +58,7 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
         ButterKnife.bind(this);
         mToolbar.setTitle(R.string.history_title);
         Timber.tag(TAG);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -130,6 +132,9 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onResume() {
         super.onResume();
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, HISTORY_MAIN);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         LocalBroadcastManager.getInstance(this).registerReceiver(mWikiDeletedBroadcastReceiver, intentFilter);
     }
 

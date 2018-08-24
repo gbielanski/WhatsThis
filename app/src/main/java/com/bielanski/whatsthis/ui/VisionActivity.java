@@ -31,7 +31,7 @@ import com.bielanski.whatsthis.utils.ImageUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions;
 import com.google.firebase.ml.vision.cloud.label.FirebaseVisionCloudLabel;
@@ -41,9 +41,6 @@ import com.google.firebase.ml.vision.label.FirebaseVisionLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetector;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetectorOptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +51,7 @@ import timber.log.Timber;
 import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 
 public class VisionActivity extends AppCompatActivity {
+    public static final String VISION_MAIN = "VisionMain";
     public final String TAG = "VisionActivity";
 
     public static final String WIKI_LABEL_KEY = "WIKI_LABEL_KEY";
@@ -66,6 +64,7 @@ public class VisionActivity extends AppCompatActivity {
 
     private ArrayAdapter<String> mAdapter;
     private String mFilePath;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,7 @@ public class VisionActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         Timber.tag(TAG);
         mFilePath = getIntent().getStringExtra(FILE_PATH_KEY);
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Drawable drawable = ImageUtils.getDrawableFromPath(this, mFilePath);
 
         //Drawable drawable = Drawable.createFromPath(mFilePath);
@@ -111,6 +110,14 @@ public class VisionActivity extends AppCompatActivity {
         // TODO use one of this function dependence on Firebase plan, please see Read me file in repo
         // visionApiLabelingOnDevide(bitmapDrawable);
         visionApiLabelingCloud(bitmapDrawable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, VISION_MAIN);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     private void  visionApiLabelingCloud(BitmapDrawable bitmapDrawable) {

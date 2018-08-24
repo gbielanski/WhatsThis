@@ -16,11 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
+import com.bielanski.whatsthis.WhatIsThisApp;
 import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
 import com.bielanski.whatsthis.network.data.WikiInfo;
 import com.bielanski.whatsthis.utils.ImageUtils;
+import com.google.android.gms.vision.Tracker;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -41,6 +44,8 @@ import static com.bielanski.whatsthis.utils.ImageUtils.FILE_PATH_KEY;
 public class WikiActivity extends AppCompatActivity {
     public static final String TAG = "WikiActivity";
     public static final String WIKIPEDIA_URL = "https://en.wikipedia.org/";
+    public static final String WIKI_MAIN = "WikiMain";
+    private Tracker mTracker;
 
     @BindView(R.id.wiki_toolbar) Toolbar mToolbar;
     @BindView(R.id.wiki_image) ImageView wikiImage;
@@ -50,6 +55,7 @@ public class WikiActivity extends AppCompatActivity {
     @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
     private WikiSavedBroadcastReceiver mWikiSavedBroadcastReceiver;
     private IntentFilter intentFilter;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class WikiActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Timber.tag(TAG);
         setSupportActionBar(mToolbar);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         final Intent intent = getIntent();
         String wikiItem = null;
         WikiEntity wikiEntity = null;
@@ -174,6 +181,9 @@ public class WikiActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, WIKI_MAIN);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         LocalBroadcastManager.getInstance(this).registerReceiver(mWikiSavedBroadcastReceiver, intentFilter);
     }
 
