@@ -19,6 +19,14 @@ import java.util.Date;
 public class ImageUtils {
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
 
+    public static Bitmap getBitmapFromByteArray(byte[] bitmapByteArray){
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapByteArray, 0, bitmapByteArray.length);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return rotatedBitmap;
+    }
+
     public static Drawable getDrawableFromPath(Context context, String filePath){
         Matrix matrix = new Matrix();
         matrix.postRotate(90);

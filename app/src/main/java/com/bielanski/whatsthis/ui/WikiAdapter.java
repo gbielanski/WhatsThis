@@ -1,7 +1,6 @@
 package com.bielanski.whatsthis.ui;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,9 +11,8 @@ import android.widget.TextView;
 
 import com.bielanski.whatsthis.R;
 import com.bielanski.whatsthis.database.data.WikiEntity;
-import com.squareup.picasso.Picasso;
+import com.bielanski.whatsthis.utils.ImageUtils;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,7 +29,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     }
 
     public interface OnClickWikiHandler{
-        void wikiOnClick(int position);
+        void wikiOnClick(int position, ImageView image);
     }
     public WikiAdapter(List<WikiEntity> wikiList, OnClickWikiHandler clickHandler) {
         this.mWikiList = wikiList;
@@ -60,7 +58,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
         final WikiEntity wikiEntity = mWikiList.get(position);
         holder.title.setText(wikiEntity.getTitle());
         holder.description.setText(wikiEntity.getDescription());
-        Bitmap bitmap = BitmapFactory.decodeByteArray(wikiEntity.getImage(), 0, wikiEntity.getImage().length);
+        final Bitmap bitmap = ImageUtils.getBitmapFromByteArray(wikiEntity.getImage());
         holder.image.setImageBitmap(bitmap);
     }
 
@@ -81,7 +79,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
 
         @Override
         public void onClick(View view) {
-            mClickHandler.wikiOnClick(getAdapterPosition());
+            mClickHandler.wikiOnClick(getAdapterPosition(), image);
         }
     }
 }

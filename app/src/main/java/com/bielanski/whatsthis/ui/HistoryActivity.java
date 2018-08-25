@@ -1,12 +1,11 @@
 package com.bielanski.whatsthis.ui;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,16 +15,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.widget.ImageView;
 
 import com.bielanski.whatsthis.R;
-import com.bielanski.whatsthis.WhatIsThisApp;
 import com.bielanski.whatsthis.database.WikiDatabase;
 import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiAsyncTaskLoader;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +66,6 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
         mWikiDeletedBroadcastReceiver = new WikiDeletedBroadcastReceiver();
         mWikiDeletedBroadcastReceiver.setWikiDeletedCallback(this);
         intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_DELETED);
-
 
         getSupportLoaderManager().initLoader(WIKI_HISTORY_LOADER_ID, null, this);
 
@@ -119,11 +115,13 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
     }
 
     @Override
-    public void wikiOnClick(int position) {
+    public void wikiOnClick(int position, ImageView image) {
         final WikiEntity wikiEntity = mAdapter.getWikiList().get(position);
         Intent intent = new Intent(this, WikiActivity.class);
         intent.putExtra(WIKI_KEY, wikiEntity);
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(HistoryActivity.this, image, "wiki");
+        startActivity(intent, options.toBundle());
     }
 
     @Override

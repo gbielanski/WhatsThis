@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/image_size">
+    android:layout_height="@dimen/small_image_height"
+    android:layout_margin="@dimen/small_margin">
+
+    <ImageView
+        android:id="@+id/wiki_item_image"
+        android:layout_width="@dimen/small_image_width"
+        android:layout_height="@dimen/small_image_height"
+        android:contentDescription="@string/saved_object_photo"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/camera_not_available"
+        android:transitionName="wiki"/>
 
     <TextView
         android:id="@+id/wiki_item_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:padding="@dimen/tiny_padding"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/wiki_item_image"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="@dimen/tiny_padding"/>
-
-    <ImageView
-        android:id="@+id/wiki_item_image"
-        android:layout_width="@dimen/image_size"
-        android:layout_height="@dimen/image_size"
-        android:layout_marginStart="@dimen/small_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/camera_not_available"
-        android:contentDescription="@string/saved_object_photo"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/wiki_item_desc"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:padding="@dimen/tiny_padding"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/wiki_item_title"
         app:layout_constraintStart_toStartOf="@+id/wiki_item_title"
-        app:layout_constraintTop_toBottomOf="@+id/wiki_item_title"
-        android:padding="@dimen/tiny_padding"/>
+        app:layout_constraintTop_toBottomOf="@+id/wiki_item_title" />
 
 </android.support.constraint.ConstraintLayout>

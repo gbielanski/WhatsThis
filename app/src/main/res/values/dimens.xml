@@ -9,7 +9,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_divider_height">0dp</dimen>
     <dimen name="small_margin">8dp</dimen>
     <dimen name="tiny_padding">4dp</dimen>
-    <dimen name="image_size">112dp</dimen>
+    <dimen name="small_image_width">80dp</dimen>
+    <dimen name="small_image_height">112dp</dimen>
     <dimen name="list_item_size">40dp</dimen>
     <dimen name="medium_margin">24dp</dimen>
     <dimen name="wiki_image_widht">200dp</dimen>

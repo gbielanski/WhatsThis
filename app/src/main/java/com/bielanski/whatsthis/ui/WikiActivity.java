@@ -79,7 +79,7 @@ public class WikiActivity extends AppCompatActivity {
             if(wikiEntity != null) {
                 mWikiTitle.setText(wikiEntity.getTitle());
                 wikiDescription.setText(wikiEntity.getDescription());
-                Bitmap bitmap = BitmapFactory.decodeByteArray(wikiEntity.getImage(), 0, wikiEntity.getImage().length);
+                final Bitmap bitmap = ImageUtils.getBitmapFromByteArray(wikiEntity.getImage());
                 mWikiImage.setImageBitmap(bitmap);
                 mButtonSave.setVisibility(View.GONE);
                 mButtonClose.setVisibility(View.GONE);
@@ -92,7 +92,6 @@ public class WikiActivity extends AppCompatActivity {
         if (intent != null) {
             wikiItem = intent.getStringExtra(VisionActivity.WIKI_LABEL_KEY);
             final String filePath = getIntent().getStringExtra(FILE_PATH_KEY);
-
             Drawable drawable = ImageUtils.getDrawableFromPath(this, filePath);
             //Drawable drawable = Drawable.createFromPath(filePath);
             mWikiImage.setImageDrawable(drawable);
