@@ -24,7 +24,7 @@
         android:layout_height="@dimen/wiki_image_height"
         android:layout_marginStart="@dimen/small_margin"
         android:layout_marginTop="@dimen/small_margin"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:contentDescription="@string/taken_photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/vision_toolbar"

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,9 @@ public class WikiActivity extends AppCompatActivity {
     @BindView(R.id.wiki_description) TextView wikiDescription;
     @BindView(R.id.wiki_button_save) ImageButton mButtonSave;
     @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
+    @BindView(R.id.wiki_progressbar) ProgressBar mProgressBar;
+    @BindView(R.id.wiki_data_no_tv) TextView mNoDataTextView;
+
     private WikiSavedBroadcastReceiver mWikiSavedBroadcastReceiver;
     private IntentFilter intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_SAVED);;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -77,6 +81,8 @@ public class WikiActivity extends AppCompatActivity {
                 Picasso.get().load(new File(wikiEntity.getFileName())).into(wikiImage);
                 mButtonSave.setVisibility(View.GONE);
                 mButtonClose.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mNoDataTextView.setVisibility(View.GONE);
                 return;
             }
         }
@@ -96,7 +102,8 @@ public class WikiActivity extends AppCompatActivity {
             loadJSON(wikiItem);
 
         mWikiSavedBroadcastReceiver = new WikiSavedBroadcastReceiver();
-
+        mNoDataTextView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.wiki_button_save)
@@ -133,7 +140,7 @@ public class WikiActivity extends AppCompatActivity {
 
                         wikiTitle.setText(wikiInfo.getDisplaytitle());
                         wikiDescription.setText(wikiInfo.getExtract());
-                        //progressBar.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         //recyclerView.setVisibility(View.VISIBLE);
                     } else {
                         Timber.d("wikiInfo is null");
@@ -151,6 +158,8 @@ public class WikiActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<WikiInfo> call, Throwable t) {
                 Timber.d("onFailure %s", t.getMessage());
+                mProgressBar.setVisibility(View.GONE);
+                mNoDataTextView.setVisibility(View.VISIBLE);
             }
         });
     }

@@ -17,4 +17,5 @@
     <string name="close_this_object_search">Close this object search</string>
     <string name="save_this_object_search">Save this object search</string>
     <string name="saved_object_photo">Saved object photo</string>
+    <string name="wiki_no_data">No information available</string>
 </resources>
