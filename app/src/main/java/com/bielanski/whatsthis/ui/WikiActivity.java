@@ -2,6 +2,8 @@ package com.bielanski.whatsthis.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -77,7 +79,8 @@ public class WikiActivity extends AppCompatActivity {
             if(wikiEntity != null) {
                 mWikiTitle.setText(wikiEntity.getTitle());
                 wikiDescription.setText(wikiEntity.getDescription());
-                Picasso.get().load(new File(wikiEntity.getFileName())).into(mWikiImage);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(wikiEntity.getImage(), 0, wikiEntity.getImage().length);
+                mWikiImage.setImageBitmap(bitmap);
                 mButtonSave.setVisibility(View.GONE);
                 mButtonClose.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.GONE);
@@ -107,7 +110,9 @@ public class WikiActivity extends AppCompatActivity {
 
     @OnClick(R.id.wiki_button_save)
     public void onClickButtonSave(View view) {
-        WikiEntity wikiEntity = new WikiEntity(mWikiTitle.getText().toString(), wikiDescription.getText().toString());
+        final File imageFile = ImageUtils.getWikiImageFile();
+        byte[] fileBytes = ImageUtils.convertFileToByteArray(imageFile);
+        WikiEntity wikiEntity = new WikiEntity(mWikiTitle.getText().toString(), wikiDescription.getText().toString(), fileBytes);
         WikiIntentService.startActionInsertWiki(this, wikiEntity);
     }
 

@@ -1,5 +1,6 @@
 package com.bielanski.whatsthis.database.data;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
@@ -7,17 +8,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.Arrays;
+
 @Entity(tableName = "wiki", indices = {@Index(value = {"title"})})
 public class WikiEntity implements Parcelable{
     @PrimaryKey
     @NonNull
-    String title;
-    String description;
-    String fileName;
+    private String title;
+    private String description;
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] image;
 
-    public WikiEntity(String title, String description) {
+    public WikiEntity(String title, String description, byte[] image) {
         this.title = title;
         this.description = description;
+        this.image = image;
     }
 
     public String getTitle() {
@@ -36,17 +41,21 @@ public class WikiEntity implements Parcelable{
         this.description = description;
     }
 
-    public String getFileName() {
-        return fileName;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setImage(byte[] image) {
+
+        System.arraycopy(image, 0, this.image, 0, image.length);
+        //Arrays.copyOf(image, image.length);
+        //this.image = image;
     }
     protected WikiEntity(Parcel in) {
         title = in.readString();
         description = in.readString();
-        fileName = in.readString();
+        image = in.createByteArray();
+        //in.readByteArray(image);
     }
 
     public static final Creator<WikiEntity> CREATOR = new Creator<WikiEntity>() {
@@ -65,8 +74,7 @@ public class WikiEntity implements Parcelable{
     public String toString() {
         String desc = "Wiki " +
                 "title " + title +
-                " description " + description +
-                " file name " + fileName;
+                " description " + description;
 
         return desc;
     }
@@ -80,6 +88,6 @@ public class WikiEntity implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(fileName);
+        parcel.writeByteArray(image);
     }
 }

@@ -29,7 +29,7 @@ public class ImageUtils {
         return drawable;
     }
 
-    private static File getWikiImageFile(){
+    public static File getWikiImageFile(){
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         final File inputFile = new File(path, "pic.jpg");
@@ -67,5 +67,19 @@ public class ImageUtils {
         }
 
         return outputFile.toString();
+    }
+
+    public static byte[] convertFileToByteArray(File file)
+    {
+        byte[] fileBytes = new byte[(int) file.length()];
+        try(FileInputStream inputStream = new FileInputStream(file))
+        {
+            inputStream.read(fileBytes);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return fileBytes;
     }
 }

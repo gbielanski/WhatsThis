@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.bielanski.whatsthis.database.data.WikiEntity;
 
-@Database(entities = {WikiEntity.class}, version = 2)
+@Database(entities = {WikiEntity.class}, version = 3)
 public abstract class  WikiDatabase extends RoomDatabase {
     private static final String LOG_TAG = WikiDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();

@@ -1,5 +1,7 @@
 package com.bielanski.whatsthis.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,8 +60,8 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
         final WikiEntity wikiEntity = mWikiList.get(position);
         holder.title.setText(wikiEntity.getTitle());
         holder.description.setText(wikiEntity.getDescription());
-        Picasso.get().load(new File(wikiEntity.getFileName())).into(holder.image);
-
+        Bitmap bitmap = BitmapFactory.decodeByteArray(wikiEntity.getImage(), 0, wikiEntity.getImage().length);
+        holder.image.setImageBitmap(bitmap);
     }
 
     @Override

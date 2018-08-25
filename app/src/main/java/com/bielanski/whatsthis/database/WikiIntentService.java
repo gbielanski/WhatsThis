@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Date;
 
 import timber.log.Timber;
@@ -64,9 +65,7 @@ public class WikiIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_INSERT_WIKI.equals(action)) {
-                final String imageFile = ImageUtils.saveImageFile();
                 final WikiEntity wiki = intent.getParcelableExtra(WIKI);
-                wiki.setFileName(imageFile);
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().bulkInsert(wiki);
                 notifyWidgetDataUpdated();
                 notifyUIWikiSaved();
