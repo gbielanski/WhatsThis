@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="112dp">
+    android:layout_height="@dimen/image_size">
 
     <TextView
         android:id="@+id/wiki_item_title"
@@ -14,13 +14,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/wiki_item_image"
         app:layout_constraintTop_toTopOf="parent"
-        android:padding="4dp"/>
+        android:padding="@dimen/tiny_padding"/>
 
     <ImageView
         android:id="@+id/wiki_item_image"
-        android:layout_width="112dp"
-        android:layout_height="112dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:layout_marginStart="@dimen/small_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,6 +36,6 @@
         app:layout_constraintEnd_toEndOf="@+id/wiki_item_title"
         app:layout_constraintStart_toStartOf="@+id/wiki_item_title"
         app:layout_constraintTop_toBottomOf="@+id/wiki_item_title"
-        android:padding="4dp"/>
+        android:padding="@dimen/tiny_padding"/>
 
 </android.support.constraint.ConstraintLayout>
