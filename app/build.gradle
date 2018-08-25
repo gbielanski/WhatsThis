@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
+            keyAlias 'key'
+            keyPassword 'welcome'
+            storeFile file('C:/Users/Grzegorz/Desktop/whatisthis.jks')
+            storePassword 'welcome'
         }
     }
     compileSdkVersion 27
@@ -18,6 +22,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
