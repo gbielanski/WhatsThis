@@ -29,6 +29,13 @@ public class ImageUtils {
         return drawable;
     }
 
+    private static File getWikiImageFile(){
+        File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        final File inputFile = new File(path, "pic.jpg");
+        return inputFile;
+    }
+
     public static String saveImageFile() {
         InputStream in = null;
         OutputStream out = null;

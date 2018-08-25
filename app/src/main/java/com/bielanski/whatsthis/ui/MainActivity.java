@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -397,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
                 Size largest = Collections.max(
                         Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
                         new CompareSizesByArea());
+                Timber.d("Image height largest %d image largest widht %d", largest.getHeight(), largest.getWidth());
                 mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
                         ImageFormat.JPEG, /*maxImages*/2);
                 mImageReader.setOnImageAvailableListener(
@@ -608,6 +611,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         private final File mFile;
 
         ImageSaver(Image image, File file) {
+            Timber.d("Image height %d image widht %d", image.getHeight(), image.getWidth());
+
             mImage = image;
             mFile = file;
         }
@@ -617,10 +622,13 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
+            Bitmap bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+            final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapImage, (int) (bitmapImage.getWidth() * 0.1), (int) (bitmapImage.getHeight() * 0.1), true);
+
             FileOutputStream output = null;
             try {
                 output = new FileOutputStream(mFile);
-                output.write(bytes);
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, output);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -638,10 +646,8 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     }
 
     static class CompareSizesByArea implements Comparator<Size> {
-
         @Override
         public int compare(Size lhs, Size rhs) {
-            // We cast here to ensure the multiplications won't overflow
             return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
                     (long) rhs.getWidth() * rhs.getHeight());
         }
