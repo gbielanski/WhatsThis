@@ -7,6 +7,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +15,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bielanski.whatsthis.R;
-import com.bielanski.whatsthis.WhatIsThisApp;
 import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
@@ -49,8 +48,8 @@ public class WikiActivity extends AppCompatActivity {
     private Tracker mTracker;
 
     @BindView(R.id.wiki_toolbar) Toolbar mToolbar;
-    @BindView(R.id.wiki_image) ImageView wikiImage;
-    @BindView(R.id.wiki_title) TextView wikiTitle;
+    @BindView(R.id.wiki_image) ImageView mWikiImage;
+    @BindView(R.id.wiki_title) TextView mWikiTitle;
     @BindView(R.id.wiki_description) TextView wikiDescription;
     @BindView(R.id.wiki_button_save) ImageButton mButtonSave;
     @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
@@ -76,9 +75,9 @@ public class WikiActivity extends AppCompatActivity {
         if (intent != null) {
             wikiEntity = intent.getParcelableExtra(WIKI_KEY);
             if(wikiEntity != null) {
-                wikiTitle.setText(wikiEntity.getTitle());
+                mWikiTitle.setText(wikiEntity.getTitle());
                 wikiDescription.setText(wikiEntity.getDescription());
-                Picasso.get().load(new File(wikiEntity.getFileName())).into(wikiImage);
+                Picasso.get().load(new File(wikiEntity.getFileName())).into(mWikiImage);
                 mButtonSave.setVisibility(View.GONE);
                 mButtonClose.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.GONE);
@@ -93,7 +92,7 @@ public class WikiActivity extends AppCompatActivity {
 
             Drawable drawable = ImageUtils.getDrawableFromPath(this, filePath);
             //Drawable drawable = Drawable.createFromPath(filePath);
-            wikiImage.setImageDrawable(drawable);
+            mWikiImage.setImageDrawable(drawable);
 
             Timber.d("wikiItem %s", wikiItem);
         }
@@ -108,7 +107,7 @@ public class WikiActivity extends AppCompatActivity {
 
     @OnClick(R.id.wiki_button_save)
     public void onClickButtonSave(View view) {
-        WikiEntity wikiEntity = new WikiEntity(wikiTitle.getText().toString(), wikiDescription.getText().toString());
+        WikiEntity wikiEntity = new WikiEntity(mWikiTitle.getText().toString(), wikiDescription.getText().toString());
         WikiIntentService.startActionInsertWiki(this, wikiEntity);
     }
 
@@ -138,7 +137,7 @@ public class WikiActivity extends AppCompatActivity {
 
                     if (wikiInfo != null) {
 
-                        wikiTitle.setText(wikiInfo.getDisplaytitle());
+                        mWikiTitle.setText(wikiInfo.getDisplaytitle());
                         wikiDescription.setText(wikiInfo.getExtract());
                         mProgressBar.setVisibility(View.GONE);
                         //recyclerView.setVisibility(View.VISIBLE);
@@ -193,6 +192,9 @@ public class WikiActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, WIKI_MAIN);
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+        if(!TextUtils.isEmpty(mWikiTitle.getText()))
+            mProgressBar.setVisibility(View.GONE);
         LocalBroadcastManager.getInstance(this).registerReceiver(mWikiSavedBroadcastReceiver, intentFilter);
     }
 
