@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.ui.WikiActivity;
+import com.bielanski.whatsthis.ui.WikiDeletedBroadcastReceiver;
 import com.bielanski.whatsthis.utils.ImageUtils;
 import com.bielanski.whatsthis.widget.HistoryWidgetProvider;
 
@@ -20,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Date;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -76,11 +78,15 @@ public class WikiIntentService extends IntentService {
                 notifyWidgetDataUpdated();
                 Timber.d("all wiki deleted");
             }else if (ACTION_DELETE_WIKI.equals(action)) {
-                final String wikiTitle = intent.getParcelableExtra(WIKI_TITLE);
+                final String wikiTitle = intent.getStringExtra(WIKI_TITLE);
+                final List<WikiEntity> allSavedWikies = WikiDatabase.getInstance(WikiIntentService.this).wikiDao().getAllSavedWikies();
+                for(WikiEntity wiki : allSavedWikies)
+                    Timber.d("Wiki in DB title %s", wiki.getTitle());
+                Timber.d("Wiki to delete title %s", wikiTitle);
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().deleteWiki(wikiTitle);
                 notifyWidgetDataUpdated();
                 notifyUIWikiDeleted();
-                Timber.d("all wiki %s deleted", wikiTitle);
+                Timber.d("wiki %s deleted", wikiTitle);
             }else
                 Timber.d("action is not ACTION_INSERT_WIKI");
 
