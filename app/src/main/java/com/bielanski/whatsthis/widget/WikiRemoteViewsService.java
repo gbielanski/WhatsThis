@@ -13,6 +13,8 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.bielanski.whatsthis.ui.HistoryActivity.WIKI_KEY;
+
 public class WikiRemoteViewsService extends RemoteViewsService {
     final static String TAG = "WikiRemoteViewsService";
 
@@ -59,6 +61,10 @@ public class WikiRemoteViewsService extends RemoteViewsService {
                     return null;
 
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_wiki_list_item);
+                Intent fillInIntent = new Intent();
+                fillInIntent.putExtra(WIKI_KEY, mWikies.get(position));
+                views.setOnClickFillInIntent(R.id.wiki_item, fillInIntent);
+
                 String wikiTitle = mWikies.get(position).getTitle();
                 Timber.d("getViewAt %s", wikiTitle);
                 views.setTextViewText(R.id.wiki_item, wikiTitle);

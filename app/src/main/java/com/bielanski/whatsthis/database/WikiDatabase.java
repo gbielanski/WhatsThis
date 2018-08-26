@@ -13,7 +13,7 @@ public abstract class  WikiDatabase extends RoomDatabase {
     private static final String LOG_TAG = WikiDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();
     private static WikiDatabase sInstance;
-    private static final String DATABASE_NAME = "recipes";
+    private static final String DATABASE_NAME = "wikies";
 
     public static WikiDatabase getInstance(Context context) {
         Log.d(LOG_TAG, "Getting the database");
