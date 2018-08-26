@@ -44,18 +44,10 @@ public class HistoryWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.history_widget_provider);
             setRemoteAdapter(context, views);
-            //Intent clickIntentTemplate = new Intent(context, MainActivity.class);
-
             Intent startActivityIntent = new Intent(context, WikiActivity.class);
             PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_list, startActivityPendingIntent);
-/*
-            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
-                    .addNextIntentWithParentStack(clickIntentTemplate)
-                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
-*/
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }

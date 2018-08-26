@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:divider="@null"
         android:dividerHeight="@dimen/widget_divider_height"
-        tools:listitem="@layout/widget_wiki_list_item"/>
+        tools:listitem="@layout/widget_wiki_list_item"
+        />
     <TextView
         android:id="@+id/widget_empty"
         android:layout_width="match_parent"
