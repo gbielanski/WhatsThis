@@ -1,0 +1,1 @@
+You have to add your own google-services.json please make sure you have project upgraded to blaze plan or change visionApiLabelingCloud to visionApiLabelingOnDevide in VisionActivity in case you can use only spark plan.
