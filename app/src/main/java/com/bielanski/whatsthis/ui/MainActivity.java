@@ -261,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        //TODO move to application and use CrashReportingTree
         Timber.tag(TAG);
         Timber.d("onCreate");
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
