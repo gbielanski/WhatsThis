@@ -7,17 +7,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.bielanski.whatsthis.R;
-import com.bielanski.whatsthis.ui.MainActivity;
 import com.bielanski.whatsthis.ui.WikiActivity;
 
-/**
- * Implementation of App Widget functionality.
- */
 public class HistoryWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "HistoryWidgetProvider";
 

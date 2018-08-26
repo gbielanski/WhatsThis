@@ -3,7 +3,6 @@ package com.bielanski.whatsthis.ui;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,16 +16,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.bielanski.whatsthis.R;
 import com.bielanski.whatsthis.database.WikiIntentService;
 import com.bielanski.whatsthis.database.data.WikiEntity;
 import com.bielanski.whatsthis.network.RequestInterface;
 import com.bielanski.whatsthis.network.data.WikiInfo;
 import com.bielanski.whatsthis.utils.ImageUtils;
-import com.google.android.gms.vision.Tracker;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -47,19 +43,25 @@ public class WikiActivity extends AppCompatActivity {
     public static final String TAG = "WikiActivity";
     public static final String WIKIPEDIA_URL = "https://en.wikipedia.org/";
     public static final String WIKI_MAIN = "WikiMain";
-    private Tracker mTracker;
-
-    @BindView(R.id.wiki_toolbar) Toolbar mToolbar;
-    @BindView(R.id.wiki_image) ImageView mWikiImage;
-    @BindView(R.id.wiki_title) TextView mWikiTitle;
-    @BindView(R.id.wiki_description) TextView wikiDescription;
-    @BindView(R.id.wiki_button_save) ImageButton mButtonSave;
-    @BindView(R.id.wiki_button_close) ImageButton mButtonClose;
-    @BindView(R.id.wiki_progressbar) ProgressBar mProgressBar;
-    @BindView(R.id.wiki_data_no_tv) TextView mNoDataTextView;
+    @BindView(R.id.wiki_toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.wiki_image)
+    ImageView mWikiImage;
+    @BindView(R.id.wiki_title)
+    TextView mWikiTitle;
+    @BindView(R.id.wiki_description)
+    TextView wikiDescription;
+    @BindView(R.id.wiki_button_save)
+    ImageButton mButtonSave;
+    @BindView(R.id.wiki_button_close)
+    ImageButton mButtonClose;
+    @BindView(R.id.wiki_progressbar)
+    ProgressBar mProgressBar;
+    @BindView(R.id.wiki_data_no_tv)
+    TextView mNoDataTextView;
 
     private WikiSavedBroadcastReceiver mWikiSavedBroadcastReceiver;
-    private IntentFilter intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_SAVED);;
+    private IntentFilter intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_SAVED);
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
@@ -72,11 +74,11 @@ public class WikiActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         final Intent intent = getIntent();
         String wikiItem = null;
-        WikiEntity wikiEntity = null;
+        WikiEntity wikiEntity;
 
         if (intent != null) {
             wikiEntity = intent.getParcelableExtra(WIKI_KEY);
-            if(wikiEntity != null) {
+            if (wikiEntity != null) {
                 mWikiTitle.setText(wikiEntity.getTitle());
                 wikiDescription.setText(wikiEntity.getDescription());
                 final Bitmap bitmap = ImageUtils.getBitmapFromByteArray(wikiEntity.getImage());
@@ -93,9 +95,7 @@ public class WikiActivity extends AppCompatActivity {
             wikiItem = intent.getStringExtra(VisionActivity.WIKI_LABEL_KEY);
             final String filePath = getIntent().getStringExtra(FILE_PATH_KEY);
             Drawable drawable = ImageUtils.getDrawableFromPath(this, filePath);
-            //Drawable drawable = Drawable.createFromPath(filePath);
             mWikiImage.setImageDrawable(drawable);
-
             Timber.d("wikiItem %s", wikiItem);
         }
 
@@ -120,7 +120,6 @@ public class WikiActivity extends AppCompatActivity {
         finish();
     }
 
-
     private void loadJSON(String title) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(WIKIPEDIA_URL)
@@ -128,9 +127,6 @@ public class WikiActivity extends AppCompatActivity {
                 .build();
         RequestInterface request = retrofit.create(RequestInterface.class);
         Call<WikiInfo> call = request.getJSON(title);
-
-        //progressBar.setVisibility(View.VISIBLE);
-        // recyclerView.setVisibility(View.GONE);
 
         call.enqueue(new Callback<WikiInfo>() {
             @Override
@@ -140,22 +136,16 @@ public class WikiActivity extends AppCompatActivity {
                     WikiInfo wikiInfo = response.body();
 
                     if (wikiInfo != null) {
-
                         mWikiTitle.setText(wikiInfo.getDisplaytitle());
                         wikiDescription.setText(wikiInfo.getExtract());
                         mProgressBar.setVisibility(View.GONE);
-                        //recyclerView.setVisibility(View.VISIBLE);
                     } else {
                         Timber.d("wikiInfo is null");
                     }
                 } else {
                     Timber.e("Error Code %s", String.valueOf(response.code()));
                     Timber.e("Error Body %s", response.errorBody().toString());
-
-                    //display the appropriate message...
                 }
-
-
             }
 
             @Override
@@ -169,24 +159,17 @@ public class WikiActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_items, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.history_menu_item) {
             HistoryActivity.startHistory(this);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -197,7 +180,7 @@ public class WikiActivity extends AppCompatActivity {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, WIKI_MAIN);
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-        if(!TextUtils.isEmpty(mWikiTitle.getText()))
+        if (!TextUtils.isEmpty(mWikiTitle.getText()))
             mProgressBar.setVisibility(View.GONE);
         LocalBroadcastManager.getInstance(this).registerReceiver(mWikiSavedBroadcastReceiver, intentFilter);
     }
@@ -207,5 +190,4 @@ public class WikiActivity extends AppCompatActivity {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mWikiSavedBroadcastReceiver);
     }
-
 }

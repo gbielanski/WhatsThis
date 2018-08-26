@@ -69,10 +69,14 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     public static final String ACTIVITY_MAIN = "ActivityMain";
     public final String TAG = "MainActivity";
 
-    @BindView(R.id.textureView) TextureView mTextureView;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.what_s_this_button) Button button;
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.textureView)
+    TextureView mTextureView;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.what_s_this_button)
+    Button button;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
 
     private Handler mCameraBackgroundHandler;
     private HandlerThread mCameraThread;
@@ -95,12 +99,14 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     private String mCameraId;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
+
     private int mSensorOrientation;
 
     private ImageReader mImageReader;
@@ -193,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         }
     }
 
-    private SurfaceTextureListener mSurfaceTextureListener = new CameraSurfaceTextureListener(this) ;
+    private SurfaceTextureListener mSurfaceTextureListener = new CameraSurfaceTextureListener(this);
 
     private CameraDevice.StateCallback mCameraStateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -217,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
                             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
-                            // Finally, we start displaying the camera preview.
                             mPreviewRequest = mPreviewRequestBuilder.build();
                             mCaptureSession.setRepeatingRequest(mPreviewRequest,
                                     mCaptureCallback, mCameraBackgroundHandler);
@@ -346,28 +351,23 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     private void openCamera() {
         Timber.d("fun openCamera");
         final CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-
         if (cameraManager == null)
             return;
 
         setupCameraOutput(cameraManager);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
             return;
         }
-
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_PERMISSION);
         }
-
         try {
             cameraManager.openCamera(mCameraId, mCameraStateCallback, mCameraBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-
     }
 
     private void setupCameraOutput(CameraManager cameraManager) {
@@ -537,19 +537,14 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_items, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.history_menu_item) {
             HistoryActivity.startHistory(this);
             return true;
@@ -571,7 +566,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     }
 
     public static class ConfirmationDialog extends DialogFragment {
-
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -600,14 +594,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
     }
 
     private static class ImageSaver implements Runnable {
-
-        /**
-         * The JPEG image
-         */
         private final Image mImage;
-        /**
-         * The file we save the image into.
-         */
         private final File mFile;
 
         ImageSaver(Image image, File file) {
@@ -642,7 +629,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
                 }
             }
         }
-
     }
 
     static class CompareSizesByArea implements Comparator<Size> {
@@ -651,7 +637,6 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
             return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
                     (long) rhs.getWidth() * rhs.getHeight());
         }
-
     }
 
     public static class ErrorDialog extends DialogFragment {

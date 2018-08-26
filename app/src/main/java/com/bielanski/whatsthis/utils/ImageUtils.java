@@ -19,7 +19,7 @@ import java.util.Date;
 public class ImageUtils {
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
 
-    public static Bitmap getBitmapFromByteArray(byte[] bitmapByteArray){
+    public static Bitmap getBitmapFromByteArray(byte[] bitmapByteArray) {
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapByteArray, 0, bitmapByteArray.length);
@@ -27,17 +27,17 @@ public class ImageUtils {
         return rotatedBitmap;
     }
 
-    public static Drawable getDrawableFromPath(Context context, String filePath){
+    public static Drawable getDrawableFromPath(Context context, String filePath) {
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
-        File imgFile = new  File(filePath);
+        File imgFile = new File(filePath);
         Bitmap inBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
         Bitmap outBitmap = Bitmap.createBitmap(inBitmap, 0, 0, inBitmap.getWidth(), inBitmap.getHeight(), matrix, true);
         Drawable drawable = new BitmapDrawable(context.getResources(), outBitmap);
         return drawable;
     }
 
-    public static File getWikiImageFile(){
+    public static File getWikiImageFile() {
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         final File inputFile = new File(path, "pic.jpg");
@@ -77,15 +77,11 @@ public class ImageUtils {
         return outputFile.toString();
     }
 
-    public static byte[] convertFileToByteArray(File file)
-    {
+    public static byte[] convertFileToByteArray(File file) {
         byte[] fileBytes = new byte[(int) file.length()];
-        try(FileInputStream inputStream = new FileInputStream(file))
-        {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
             inputStream.read(fileBytes);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return fileBytes;

@@ -6,7 +6,7 @@ import android.view.TextureView;
 public class CameraSurfaceTextureListener implements TextureView.SurfaceTextureListener {
     private OnSurfaceTextureAvailable callback;
 
-    public interface OnSurfaceTextureAvailable{
+    public interface OnSurfaceTextureAvailable {
         void onSurfaceTextureAvailable();
     }
 
@@ -31,6 +31,5 @@ public class CameraSurfaceTextureListener implements TextureView.SurfaceTextureL
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-
     }
 }

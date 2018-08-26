@@ -10,12 +10,12 @@ import com.bielanski.whatsthis.database.data.WikiEntity;
 import java.util.List;
 
 @Dao
-public interface   WikiDao {
+public interface WikiDao {
     @Query("SELECT * FROM wiki")
     List<WikiEntity> getAllSavedWikies();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void bulkInsert(WikiEntity ... wiki);
+    void bulkInsert(WikiEntity... wiki);
 
     @Query("DELETE FROM wiki")
     void deleteAll();

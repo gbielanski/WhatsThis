@@ -29,22 +29,23 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
         return mWikiList.get(adapterPosition).getTitle();
     }
 
-    public interface OnClickWikiHandler{
+    public interface OnClickWikiHandler {
         void wikiOnClick(int position, ImageView image);
     }
+
     public WikiAdapter(List<WikiEntity> wikiList, OnClickWikiHandler clickHandler) {
         this.mWikiList = wikiList;
         this.mClickHandler = clickHandler;
     }
 
-    public void addWikiList(List<WikiEntity> wikiList){
+    public void addWikiList(List<WikiEntity> wikiList) {
         Timber.d("addWikiList");
         this.mWikiList.clear();
         this.mWikiList.addAll(wikiList);
         notifyDataSetChanged();
     }
 
-    public List<WikiEntity> getWikiList(){
+    public List<WikiEntity> getWikiList() {
         return mWikiList;
     }
 
@@ -52,7 +53,7 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     @NonNull
     @Override
     public WikiAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.wiki_list_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.wiki_list_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -70,10 +71,14 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
         return mWikiList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        @BindView(R.id.wiki_item_title) TextView title;
-        @BindView(R.id.wiki_item_desc) TextView description;
-        @BindView(R.id.wiki_item_image) ImageView image;
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.wiki_item_title)
+        TextView title;
+        @BindView(R.id.wiki_item_desc)
+        TextView description;
+        @BindView(R.id.wiki_item_image)
+        ImageView image;
+
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

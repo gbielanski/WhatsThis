@@ -3,24 +3,9 @@ package com.bielanski.whatsthis.database;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
-import android.os.Environment;
-import android.widget.Toast;
 
 import com.bielanski.whatsthis.database.data.WikiEntity;
-import com.bielanski.whatsthis.ui.WikiActivity;
-import com.bielanski.whatsthis.ui.WikiDeletedBroadcastReceiver;
-import com.bielanski.whatsthis.utils.ImageUtils;
 import com.bielanski.whatsthis.widget.HistoryWidgetProvider;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.util.Date;
 import java.util.List;
 
 import timber.log.Timber;
@@ -73,24 +58,24 @@ public class WikiIntentService extends IntentService {
                 notifyUIWikiSaved();
                 Timber.d("wiki inserted");
 
-            }else if (ACTION_DELETE_ALL_WIKI.equals(action)) {
+            } else if (ACTION_DELETE_ALL_WIKI.equals(action)) {
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().deleteAll();
                 notifyWidgetDataUpdated();
                 Timber.d("all wiki deleted");
-            }else if (ACTION_DELETE_WIKI.equals(action)) {
+            } else if (ACTION_DELETE_WIKI.equals(action)) {
                 final String wikiTitle = intent.getStringExtra(WIKI_TITLE);
                 final List<WikiEntity> allSavedWikies = WikiDatabase.getInstance(WikiIntentService.this).wikiDao().getAllSavedWikies();
-                for(WikiEntity wiki : allSavedWikies)
+                for (WikiEntity wiki : allSavedWikies)
                     Timber.d("Wiki in DB title %s", wiki.getTitle());
                 Timber.d("Wiki to delete title %s", wikiTitle);
                 WikiDatabase.getInstance(WikiIntentService.this).wikiDao().deleteWiki(wikiTitle);
                 notifyWidgetDataUpdated();
                 notifyUIWikiDeleted();
                 Timber.d("wiki %s deleted", wikiTitle);
-            }else
+            } else
                 Timber.d("action is not ACTION_INSERT_WIKI");
 
-        }else
+        } else
             Timber.d("intent is null");
     }
 

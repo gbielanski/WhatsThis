@@ -57,12 +57,18 @@ public class VisionActivity extends AppCompatActivity {
     public final String TAG = "VisionActivity";
 
     public static final String WIKI_LABEL_KEY = "WIKI_LABEL_KEY";
-    @BindView(R.id.vision_image) ImageView visionImage;
-    @BindView(R.id.vision_list) ListView visionList;
-    @BindView(R.id.vision_toolbar) Toolbar mToolbar;
-    @BindView(R.id.progress_bar_vision) ProgressBar mProgressBar;
-    @BindView(R.id.data_no_available_tv) TextView mNoDataTextView;
-    @BindView(R.id.vision_close_button) ImageButton mVisionCloseButton;
+    @BindView(R.id.vision_image)
+    ImageView visionImage;
+    @BindView(R.id.vision_list)
+    ListView visionList;
+    @BindView(R.id.vision_toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.progress_bar_vision)
+    ProgressBar mProgressBar;
+    @BindView(R.id.data_no_available_tv)
+    TextView mNoDataTextView;
+    @BindView(R.id.vision_close_button)
+    ImageButton mVisionCloseButton;
 
     private ArrayAdapter<String> mAdapter;
     private String mFilePath;
@@ -80,7 +86,6 @@ public class VisionActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Drawable drawable = ImageUtils.getDrawableFromPath(this, mFilePath);
 
-        //Drawable drawable = Drawable.createFromPath(mFilePath);
         visionImage.setImageDrawable(drawable);
         BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
         mAdapter = new ArrayAdapter<>(this,
@@ -122,7 +127,7 @@ public class VisionActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
-    private void  visionApiLabelingCloud(BitmapDrawable bitmapDrawable) {
+    private void visionApiLabelingCloud(BitmapDrawable bitmapDrawable) {
         FirebaseVisionCloudDetectorOptions options =
                 new FirebaseVisionCloudDetectorOptions.Builder()
                         .setModelType(FirebaseVisionCloudDetectorOptions.LATEST_MODEL)
@@ -137,6 +142,7 @@ public class VisionActivity extends AppCompatActivity {
                                 new OnSuccessListener<List<FirebaseVisionCloudLabel>>() {
                                     int count = 0;
                                     ArrayList<String> listOfLabels = new ArrayList<>();
+
                                     @Override
                                     public void onSuccess(List<FirebaseVisionCloudLabel> labels) {
                                         visionList.setVisibility(View.VISIBLE);
@@ -183,6 +189,7 @@ public class VisionActivity extends AppCompatActivity {
                                 new OnSuccessListener<List<FirebaseVisionLabel>>() {
                                     int count = 0;
                                     ArrayList<String> listOfLabels = new ArrayList<>();
+
                                     @Override
                                     public void onSuccess(List<FirebaseVisionLabel> labels) {
                                         for (FirebaseVisionLabel label : labels) {
@@ -191,7 +198,7 @@ public class VisionActivity extends AppCompatActivity {
                                             float confidence = label.getConfidence();
                                             Timber.d("onSuccess labels[%d] text %s entityId %s confidence %.2f", labels.size(), text, entityId, confidence);
                                             listOfLabels.add(text);
-                                            if(++count > 5) {
+                                            if (++count > 5) {
                                                 break;
                                             }
                                         }
@@ -218,12 +225,8 @@ public class VisionActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.history_menu_item) {
             HistoryActivity.startHistory(this);
             return true;
