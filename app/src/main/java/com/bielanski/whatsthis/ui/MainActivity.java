@@ -354,15 +354,17 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         if (cameraManager == null)
             return;
 
-        setupCameraOutput(cameraManager);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
             return;
         }
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_PERMISSION);
+            requestExternalStoragePermission();;
+            return;
         }
+        setupCameraOutput(cameraManager);
+
         try {
             cameraManager.openCamera(mCameraId, mCameraStateCallback, mCameraBackgroundHandler);
         } catch (CameraAccessException e) {
@@ -445,6 +447,15 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
             new ConfirmationDialog().show(getSupportFragmentManager(), FRAGMENT_DIALOG);
         } else {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    private void requestExternalStoragePermission() {
+        Timber.d("requestExternalStoragePermission");
+        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            new ConfirmationDialog().show(getSupportFragmentManager(), FRAGMENT_DIALOG);
+        } else {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_PERMISSION);
         }
     }
 
@@ -569,13 +580,12 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Fragment parent = getParentFragment();
             return new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.request_permission)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            parent.requestPermissions(new String[]{Manifest.permission.CAMERA},
+                            requestPermissions(new String[]{Manifest.permission.CAMERA},
                                     REQUEST_CAMERA_PERMISSION);
                         }
                     })
@@ -583,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements CameraSurfaceText
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Activity activity = parent.getActivity();
+                                    Activity activity = getActivity();
                                     if (activity != null) {
                                         activity.finish();
                                     }
