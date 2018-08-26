@@ -38,7 +38,7 @@
         <receiver android:name=".widget.HistoryWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.bielanski.bakingapp.ACTION_DATA_UPDATED" />
+                <action android:name="com.bielanski.whatsthis.widget.ACTION_DATA_UPDATED" />
             </intent-filter>
 
             <meta-data
@@ -56,6 +56,7 @@
             android:name=".widget.WikiRemoteViewsService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <receiver android:name=".ui.WikiSavedBroadcastReceiver"  android:exported="false">
             <intent-filter>
                 <action android:name="com.bielanski.whatsthis.database.action.WIKI_SAVED"/>

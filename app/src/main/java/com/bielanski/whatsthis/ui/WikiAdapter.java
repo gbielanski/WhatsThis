@@ -17,6 +17,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     public static final String TAG = "WikiAdapter";
@@ -37,7 +38,9 @@ class WikiAdapter extends RecyclerView.Adapter<WikiAdapter.ViewHolder> {
     }
 
     public void addWikiList(List<WikiEntity> wikiList){
-        this.mWikiList = wikiList;
+        Timber.d("addWikiList");
+        this.mWikiList.clear();
+        this.mWikiList.addAll(wikiList);
         notifyDataSetChanged();
     }
 

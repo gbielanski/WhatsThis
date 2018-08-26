@@ -126,7 +126,8 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onWikiDeleted() {
-        getSupportLoaderManager().initLoader(WIKI_HISTORY_LOADER_ID, null, this);
+        Timber.d("onWikiDeleted");
+        getSupportLoaderManager().restartLoader(WIKI_HISTORY_LOADER_ID, null, this);
     }
 
     @Override

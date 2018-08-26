@@ -15,6 +15,9 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="medium_margin">24dp</dimen>
     <dimen name="wiki_image_widht">200dp</dimen>
     <dimen name="wiki_image_height">270dp</dimen>
+    <dimen name="widget_min_height">120dp</dimen>
+    <dimen name="widget_min_width">200dp</dimen>
     <integer name="anim_duration_long">500</integer>
+    <integer name="update_duration_milisec">86400000</integer>
 
 </resources>

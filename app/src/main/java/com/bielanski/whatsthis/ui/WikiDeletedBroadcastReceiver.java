@@ -25,7 +25,7 @@ public class WikiDeletedBroadcastReceiver extends BroadcastReceiver {
         if (mWikiDeleted == null)
             Timber.d("setWikiDeletedCallback is null");
         else
-            Timber.d("setWikiDeletedCallback is not null");
+            mWikiDeleted.onWikiDeleted();
 
 
     }
@@ -34,8 +34,9 @@ public class WikiDeletedBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (mWikiDeleted == null)
             Timber.d("onReceive is null");
-        else
+        else{
             Timber.d("onReceive is not null");
-        mWikiDeleted.onWikiDeleted();
+            mWikiDeleted.onWikiDeleted();
+        }
     }
 }

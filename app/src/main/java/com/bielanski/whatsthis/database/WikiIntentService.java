@@ -95,16 +95,19 @@ public class WikiIntentService extends IntentService {
     }
 
     private void notifyUIWikiDeleted() {
+        Timber.d("notifyUIWikiDeleted");
         Intent wikiSavedIntent = new Intent(ACTION_WIKI_DELETED);
         sendBroadcast(wikiSavedIntent);
     }
 
     private void notifyUIWikiSaved() {
+        Timber.d("notifyUIWikiSaved");
         Intent wikiSavedIntent = new Intent(ACTION_WIKI_SAVED);
         sendBroadcast(wikiSavedIntent);
     }
 
     private void notifyWidgetDataUpdated() {
+        Timber.d("Widget notifyWidgetDataUpdated");
         Intent dataUpdatedIntent = new Intent(HistoryWidgetProvider.ACTION_DATA_UPDATED);
         sendBroadcast(dataUpdatedIntent);
     }

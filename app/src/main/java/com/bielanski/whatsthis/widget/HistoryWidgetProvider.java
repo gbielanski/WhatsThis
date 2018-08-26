@@ -18,7 +18,7 @@ import com.bielanski.whatsthis.ui.MainActivity;
  * Implementation of App Widget functionality.
  */
 public class HistoryWidgetProvider extends AppWidgetProvider {
-    private static final String TAG = "RecipeWidgetProvider";
+    private static final String TAG = "HistoryWidgetProvider";
 
     public static final String ACTION_DATA_UPDATED = "com.bielanski.whatsthis.widget.ACTION_DATA_UPDATED";
 
@@ -28,6 +28,7 @@ public class HistoryWidgetProvider extends AppWidgetProvider {
         Log.v(TAG, "onReceive");
 
         if (ACTION_DATA_UPDATED.equals(intent.getAction())) {
+            Log.v(TAG, "Widget ACTION_DATA_UPDATED");
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));
