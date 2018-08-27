@@ -1,5 +1,6 @@
 package com.bielanski.whatsthis.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -24,7 +25,7 @@ public interface WikiDao {
     int countWikiEntities();
 
     @Query("SELECT * FROM wiki WHERE title == :title")
-    List<WikiEntity> getWikiesWithTitle(String title);
+    LiveData<List<WikiEntity>> getWikiesWithTitle(String title);
 
     @Query("DELETE FROM wiki WHERE title == :title")
     void deleteWiki(String title);

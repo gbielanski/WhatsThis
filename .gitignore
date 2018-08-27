@@ -10,3 +10,4 @@
 .externalNativeBuild
 app/libs/
 /app/google-services.json
+/whatisthis.jks

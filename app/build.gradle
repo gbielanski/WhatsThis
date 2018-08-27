@@ -50,6 +50,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.github.markushi:circlebutton:1.1'
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "android.arch.lifecycle:viewmodel:1.1.1"
 }
 
 apply plugin: 'com.google.gms.google-services'

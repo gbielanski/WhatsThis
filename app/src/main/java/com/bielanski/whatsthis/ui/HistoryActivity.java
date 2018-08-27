@@ -1,5 +1,8 @@
 package com.bielanski.whatsthis.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -32,17 +35,13 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class HistoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<WikiEntity>>, WikiAdapter.OnClickWikiHandler, WikiDeletedBroadcastReceiver.WikiDeleted {
+public class HistoryActivity extends AppCompatActivity implements  WikiAdapter.OnClickWikiHandler, WikiDeletedBroadcastReceiver.WikiDeleted {
     public static final String WIKI_KEY = "WIKI_KEY";
     public static final String HISTORY_MAIN = "HistoryMain";
     private FirebaseAnalytics mFirebaseAnalytics;
-    private List<WikiEntity> mListOfWikiEntities;
-    public static final int WIKI_HISTORY_LOADER_ID = 234;
     public static final String TAG = "HistoryActivity";
-    @BindView(R.id.history_recycler_view)
-    RecyclerView mRecyclerView;
-    @BindView(R.id.history_toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.history_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.history_toolbar) Toolbar mToolbar;
     private WikiAdapter mAdapter;
     private WikiDeletedBroadcastReceiver mWikiDeletedBroadcastReceiver;
     private IntentFilter intentFilter;
@@ -69,7 +68,14 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
         mWikiDeletedBroadcastReceiver.setWikiDeletedCallback(this);
         intentFilter = new IntentFilter(WikiIntentService.ACTION_WIKI_DELETED);
 
-        getSupportLoaderManager().initLoader(WIKI_HISTORY_LOADER_ID, null, this);
+        WikiViewModel model = ViewModelProviders.of(this).get(WikiViewModel.class);
+        WikiDatabase database = WikiDatabase.getInstance(getApplicationContext());
+        model.getWikies(database).observe(this, new Observer<List<WikiEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<WikiEntity> wikiEntities) {
+                mAdapter.addWikiList(wikiEntities);
+            }
+        });
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -85,37 +91,6 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
         }).attachToRecyclerView(mRecyclerView);
     }
 
-    @NonNull
-    @Override
-    public Loader<List<WikiEntity>> onCreateLoader(int id, @Nullable Bundle args) {
-        WikiAsyncTaskLoader asyncTaskLoader = new WikiAsyncTaskLoader(this);
-        WikiDatabase database = WikiDatabase.getInstance(HistoryActivity.this);
-        asyncTaskLoader.setDatabase(database);
-        return asyncTaskLoader;
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<WikiEntity>> loader, List<WikiEntity> listOfWikiEntities) {
-
-        if (listOfWikiEntities == null || listOfWikiEntities.size() == 0) {
-            Timber.d("listOfWikiEntities is empty");
-        }
-
-        mListOfWikiEntities = listOfWikiEntities;
-
-        for (WikiEntity entity : mListOfWikiEntities) {
-            Timber.d(entity.toString());
-        }
-
-        Timber.d("listOfWikiEntities size %d", mListOfWikiEntities.size());
-        mAdapter.addWikiList(mListOfWikiEntities);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<WikiEntity>> loader) {
-
-    }
-
     @Override
     public void wikiOnClick(int position, ImageView image) {
         final WikiEntity wikiEntity = mAdapter.getWikiList().get(position);
@@ -129,7 +104,6 @@ public class HistoryActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onWikiDeleted() {
         Timber.d("onWikiDeleted");
-        getSupportLoaderManager().restartLoader(WIKI_HISTORY_LOADER_ID, null, this);
     }
 
     @Override
