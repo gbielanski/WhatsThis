@@ -4,7 +4,7 @@
     android:initialLayout="@layout/history_widget_provider"
     android:minHeight="@dimen/widget_min_height"
     android:minWidth="@dimen/widget_min_width"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="@integer/update_duration_milisec"
     android:widgetCategory="home_screen" />
