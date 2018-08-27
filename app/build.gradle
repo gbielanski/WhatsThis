@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key'
             keyPassword 'welcome'
-            storeFile file('C:/Users/Grzegorz/Desktop/whatisthis.jks')
+            storeFile file("$rootDir/whatisthis.jks")
             storePassword 'welcome'
         }
     }
